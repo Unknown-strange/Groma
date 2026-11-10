@@ -1,0 +1,33 @@
+{
+  "name": "groma",
+  "version": "0.1.0",
+  "description": "Deterministic codebase knowledge & skill generator for IDE AI agents.",
+  "main": "bin/groma.js",
+  "bin": {
+    "groma": "./bin/groma.js"
+  },
+  "files": [
+    "bin/",
+    "groma/",
+    "pyproject.toml",
+    "README.md",
+    "architecture_diagram.jpg"
+  ],
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "keywords": [
+    "ai",
+    "agent",
+    "cursor",
+    "antigravity",
+    "claude-code",
+    "codebase",
+    "static-analysis",
+    "architecture",
+    "ast",
+    "dependencies"
+  ],
+  "license": "MIT"
+}
+

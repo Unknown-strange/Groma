@@ -2,8 +2,6 @@
 
 > **Deterministic Codebase Knowledge, Architecture Mapping & Skill Generator for IDE AI Agents**  
 
-![Groma System Architecture](architecture_diagram.jpg)
-
 ---
 
 ## 📖 Table of Contents

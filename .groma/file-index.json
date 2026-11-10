@@ -1,0 +1,2172 @@
+{
+  "project_name": "Groma",
+  "updated_at": "2026-11-10T16:25:23.614042+00:00",
+  "files": {
+    "bin/groma.js": {
+      "path": "bin/groma.js",
+      "language": "javascript",
+      "size": 1900,
+      "lines_of_code": 71,
+      "module_docstring": null,
+      "imports": [],
+      "classes": [],
+      "functions": [],
+      "routes": []
+    },
+    "groma/__init__.py": {
+      "path": "groma/__init__.py",
+      "language": "python",
+      "size": 110,
+      "lines_of_code": 4,
+      "module_docstring": "Groma — Deterministic codebase knowledge & skill generator for IDE AI agents.",
+      "imports": [],
+      "classes": [],
+      "functions": [],
+      "routes": []
+    },
+    "groma/__main__.py": {
+      "path": "groma/__main__.py",
+      "language": "python",
+      "size": 116,
+      "lines_of_code": 7,
+      "module_docstring": "Executable entry point for python -m groma.",
+      "imports": [
+        "groma.cli",
+        "groma.cli.app"
+      ],
+      "classes": [],
+      "functions": [],
+      "routes": []
+    },
+    "groma/cli.py": {
+      "path": "groma/cli.py",
+      "language": "python",
+      "size": 9565,
+      "lines_of_code": 282,
+      "module_docstring": "Typer + Rich CLI Orchestrator for Groma: scan, check, and update.",
+      "imports": [
+        "__future__",
+        "__future__.annotations",
+        "groma",
+        "groma.__version__",
+        "groma.generators",
+        "groma.generators.generate_all_docs",
+        "groma.graph",
+        "groma.graph.DependencyGraph",
+        "groma.manifest",
+        "groma.manifest.build_manifest",
+        "groma.manifest.diff_manifests",
+        "groma.manifest.load_manifest",
+        "groma.manifest.save_manifest",
+        "groma.parsers",
+        "groma.parsers.build_file_index",
+        "groma.parsers.load_file_index",
+        "groma.parsers.save_file_index",
+        "groma.scanner",
+        "groma.scanner.scan_repository",
+        "pathlib",
+        "pathlib.Path",
+        "rich.console",
+        "rich.console.Console",
+        "rich.panel",
+        "rich.panel.Panel",
+        "rich.table",
+        "rich.table.Table",
+        "typer",
+        "typing",
+        "typing.Annotated"
+      ],
+      "classes": [],
+      "functions": [
+        {
+          "name": "version_callback",
+          "params": [
+            "value: bool"
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "docstring": null,
+          "start_line": 34,
+          "end_line": 37,
+          "is_async": false,
+          "calls": [
+            "console.print",
+            "typer.Exit"
+          ]
+        },
+        {
+          "name": "main",
+          "params": [
+            "version: bool = typer.Option(False, '--version', '-v', help='Show Groma version and exit.', callback=version_callback, is_eager=True)"
+          ],
+          "return_type": "None",
+          "decorators": [
+            "@app.callback()"
+          ],
+          "docstring": "Groma CLI root callback.",
+          "start_line": 41,
+          "end_line": 51,
+          "is_async": false,
+          "calls": [
+            "app.callback",
+            "typer.Option"
+          ]
+        },
+        {
+          "name": "scan_cmd",
+          "params": [
+            "target_dir: Annotated[Path, typer.Argument(help='Path to repository root.', exists=True, file_okay=False, dir_okay=True, resolve_path=True)] = Path('.')"
+          ],
+          "return_type": "None",
+          "decorators": [
+            "@app.command(name='scan')"
+          ],
+          "docstring": "Perform a full baseline scan, parse symbols, build graph, and generate docs.",
+          "start_line": 55,
+          "end_line": 111,
+          "is_async": false,
+          "calls": [
+            "', '.join",
+            "DependencyGraph",
+            "Panel",
+            "Path",
+            "Table",
+            "app.command",
+            "build_file_index",
+            "build_manifest",
+            "console.print",
+            "console.status",
+            "generate_all_docs",
+            "graph.core_hubs",
+            "len",
+            "save_file_index",
+            "save_manifest",
+            "scan_repository",
+            "str",
+            "table.add_column",
+            "table.add_row",
+            "typer.Argument"
+          ]
+        },
+        {
+          "name": "check_cmd",
+          "params": [
+            "target_dir: Annotated[Path, typer.Argument(help='Path to repository root.', exists=True, file_okay=False, dir_okay=True, resolve_path=True)] = Path('.')"
+          ],
+          "return_type": "None",
+          "decorators": [
+            "@app.command(name='check')"
+          ],
+          "docstring": "Read-only check of disk state vs manifest.json. Reports staleness and impact radius.",
+          "start_line": 115,
+          "end_line": 211,
+          "is_async": false,
+          "calls": [
+            "'\\n'.join",
+            "DependencyGraph",
+            "Panel",
+            "Path",
+            "app.command",
+            "build_manifest",
+            "console.print",
+            "console.status",
+            "diff.renamed.items",
+            "diff_manifests",
+            "graph.impact_radius",
+            "len",
+            "load_file_index",
+            "load_manifest",
+            "scan_repository",
+            "stale_lines.append",
+            "stale_lines.extend",
+            "typer.Argument",
+            "typer.Exit"
+          ]
+        },
+        {
+          "name": "update_cmd",
+          "params": [
+            "target_dir: Annotated[Path, typer.Argument(help='Path to repository root.', exists=True, file_okay=False, dir_okay=True, resolve_path=True)] = Path('.')"
+          ],
+          "return_type": "None",
+          "decorators": [
+            "@app.command(name='update')"
+          ],
+          "docstring": "Fast incremental rebuild. Re-parses ONLY changed files and synchronizes docs.",
+          "start_line": 215,
+          "end_line": 282,
+          "is_async": false,
+          "calls": [
+            "DependencyGraph",
+            "Panel",
+            "Path",
+            "app.command",
+            "build_file_index",
+            "build_manifest",
+            "console.print",
+            "console.status",
+            "diff_manifests",
+            "generate_all_docs",
+            "len",
+            "load_file_index",
+            "load_manifest",
+            "new_index.files.pop",
+            "save_file_index",
+            "save_manifest",
+            "scan_cmd",
+            "scan_repository",
+            "set",
+            "typer.Argument",
+            "typer.Exit"
+          ]
+        }
+      ],
+      "routes": []
+    },
+    "groma/generators/__init__.py": {
+      "path": "groma/generators/__init__.py",
+      "language": "python",
+      "size": 1023,
+      "lines_of_code": 33,
+      "module_docstring": "Markdown, SKILL.md, and rule document generators for Groma.",
+      "imports": [
+        "__future__",
+        "__future__.annotations",
+        "groma.generators.markdown",
+        "groma.generators.markdown.render_markdown_docs",
+        "groma.generators.rules",
+        "groma.generators.rules.render_agent_rules",
+        "groma.generators.skill",
+        "groma.generators.skill.render_skill_doc",
+        "groma.graph",
+        "groma.graph.DependencyGraph",
+        "groma.schema",
+        "groma.schema.FileIndex",
+        "groma.schema.Manifest",
+        "pathlib",
+        "pathlib.Path"
+      ],
+      "classes": [],
+      "functions": [
+        {
+          "name": "generate_all_docs",
+          "params": [
+            "repo_root: Path",
+            "manifest: Manifest",
+            "file_index: FileIndex",
+            "graph: DependencyGraph",
+            "project_name: str | None = None"
+          ],
+          "return_type": "list[Path]",
+          "decorators": [],
+          "docstring": "Generate all .groma/*.md documents, SKILL.md, and agent sync rules.",
+          "start_line": 14,
+          "end_line": 25,
+          "is_async": false,
+          "calls": [
+            "list",
+            "md_paths.values",
+            "render_agent_rules",
+            "render_markdown_docs",
+            "render_skill_doc"
+          ]
+        }
+      ],
+      "routes": []
+    },
+    "groma/generators/markdown.py": {
+      "path": "groma/generators/markdown.py",
+      "language": "python",
+      "size": 8218,
+      "lines_of_code": 219,
+      "module_docstring": "Markdown generators for architecture.md, file-map.md, and dependencies.md.",
+      "imports": [
+        "__future__",
+        "__future__.annotations",
+        "groma.graph",
+        "groma.graph.DependencyGraph",
+        "groma.schema",
+        "groma.schema.FileIndex",
+        "groma.schema.Manifest",
+        "pathlib",
+        "pathlib.Path"
+      ],
+      "classes": [],
+      "functions": [
+        {
+          "name": "generate_architecture_doc",
+          "params": [
+            "manifest: Manifest",
+            "file_index: FileIndex",
+            "graph: DependencyGraph"
+          ],
+          "return_type": "str",
+          "decorators": [],
+          "docstring": "Generate .groma/architecture.md content.",
+          "start_line": 13,
+          "end_line": 87,
+          "is_async": false,
+          "calls": [
+            "', '.join",
+            "'\\n'.join",
+            "all_routes.append",
+            "doc.replace",
+            "enumerate",
+            "file_index.files.get",
+            "file_index.files.items",
+            "file_index.files.values",
+            "graph.core_hubs",
+            "len",
+            "lines.append",
+            "lines.extend",
+            "sorted",
+            "sum"
+          ]
+        },
+        {
+          "name": "_format_function_signature",
+          "params": [
+            "func_name: str",
+            "params: list[str]",
+            "return_type: str | None"
+          ],
+          "return_type": "str",
+          "decorators": [],
+          "docstring": "Format a clean Python function signature string.",
+          "start_line": 90,
+          "end_line": 96,
+          "is_async": false,
+          "calls": [
+            "', '.join"
+          ]
+        },
+        {
+          "name": "generate_file_map_doc",
+          "params": [
+            "file_index: FileIndex"
+          ],
+          "return_type": "str",
+          "decorators": [],
+          "docstring": "Generate .groma/file-map.md content with complete classes, methods, and functions.",
+          "start_line": 99,
+          "end_line": 149,
+          "is_async": false,
+          "calls": [
+            "', '.join",
+            "'\\n'.join",
+            "_format_function_signature",
+            "file_index.files.items",
+            "lines.append",
+            "lines.extend",
+            "sorted"
+          ]
+        },
+        {
+          "name": "generate_dependencies_doc",
+          "params": [
+            "graph: DependencyGraph"
+          ],
+          "return_type": "str",
+          "decorators": [],
+          "docstring": "Generate .groma/dependencies.md content detailing per-file imports and dependents.",
+          "start_line": 152,
+          "end_line": 190,
+          "is_async": false,
+          "calls": [
+            "'\\n'.join",
+            "graph.file_index.files.keys",
+            "graph.imported_by",
+            "graph.imports_of",
+            "len",
+            "lines.append",
+            "lines.extend",
+            "sorted"
+          ]
+        },
+        {
+          "name": "render_markdown_docs",
+          "params": [
+            "repo_root: Path",
+            "manifest: Manifest",
+            "file_index: FileIndex",
+            "graph: DependencyGraph"
+          ],
+          "return_type": "dict[str, Path]",
+          "decorators": [],
+          "docstring": "Render all 3 markdown files into <repo_root>/.groma/ and return their paths.",
+          "start_line": 193,
+          "end_line": 219,
+          "is_async": false,
+          "calls": [
+            "arch_path.write_text",
+            "deps_path.write_text",
+            "file_map_path.write_text",
+            "generate_architecture_doc",
+            "generate_dependencies_doc",
+            "generate_file_map_doc",
+            "out_dir.mkdir",
+            "repo_root.resolve"
+          ]
+        }
+      ],
+      "routes": []
+    },
+    "groma/generators/rules.py": {
+      "path": "groma/generators/rules.py",
+      "language": "python",
+      "size": 2420,
+      "lines_of_code": 57,
+      "module_docstring": "Agent rule generator for IDE AI agents (Cursor, Antigravity, Claude Code).",
+      "imports": [
+        "__future__",
+        "__future__.annotations",
+        "pathlib",
+        "pathlib.Path"
+      ],
+      "classes": [],
+      "functions": [
+        {
+          "name": "render_agent_rules",
+          "params": [
+            "repo_root: Path"
+          ],
+          "return_type": "list[Path]",
+          "decorators": [],
+          "docstring": "Write agent rule files to .agents/rules/groma-sync.md and .cursorrules.",
+          "start_line": 28,
+          "end_line": 56,
+          "is_async": false,
+          "calls": [
+            "agents_rule_file.write_text",
+            "agents_rules_dir.mkdir",
+            "cursorrules_file.is_file",
+            "cursorrules_file.read_text",
+            "cursorrules_file.write_text",
+            "generated.append",
+            "repo_root.resolve"
+          ]
+        }
+      ],
+      "routes": []
+    },
+    "groma/generators/skill.py": {
+      "path": "groma/generators/skill.py",
+      "language": "python",
+      "size": 3570,
+      "lines_of_code": 95,
+      "module_docstring": "Skill generator for .agents/skills/<project>/SKILL.md.",
+      "imports": [
+        "__future__",
+        "__future__.annotations",
+        "groma.schema",
+        "groma.schema.Manifest",
+        "pathlib",
+        "pathlib.Path"
+      ],
+      "classes": [],
+      "functions": [
+        {
+          "name": "generate_skill_doc",
+          "params": [
+            "manifest: Manifest",
+            "project_name: str | None = None"
+          ],
+          "return_type": "str",
+          "decorators": [],
+          "docstring": "Generate the complete content for SKILL.md including YAML frontmatter and AI rules.",
+          "start_line": 12,
+          "end_line": 79,
+          "is_async": false,
+          "calls": [
+            "'\\n'.join",
+            "p_name.lower",
+            "p_name.lower().replace",
+            "p_name.lower().replace(' ', '-').replace"
+          ]
+        },
+        {
+          "name": "render_skill_doc",
+          "params": [
+            "repo_root: Path",
+            "manifest: Manifest",
+            "project_name: str | None = None"
+          ],
+          "return_type": "Path",
+          "decorators": [],
+          "docstring": "Write SKILL.md to .agents/skills/<project_name>/SKILL.md and return its path.",
+          "start_line": 82,
+          "end_line": 94,
+          "is_async": false,
+          "calls": [
+            "generate_skill_doc",
+            "p_name.lower",
+            "p_name.lower().replace",
+            "p_name.lower().replace(' ', '-').replace",
+            "repo_root.resolve",
+            "skill_path.write_text",
+            "target_dir.mkdir"
+          ]
+        }
+      ],
+      "routes": []
+    },
+    "groma/graph.py": {
+      "path": "groma/graph.py",
+      "language": "python",
+      "size": 5222,
+      "lines_of_code": 139,
+      "module_docstring": "Dependency graph, import resolution, core hub detection, and impact radius analysis.",
+      "imports": [
+        "__future__",
+        "__future__.annotations",
+        "collections",
+        "collections.defaultdict",
+        "groma.schema",
+        "groma.schema.FileIndex",
+        "networkx",
+        "pathlib",
+        "pathlib.Path"
+      ],
+      "classes": [
+        {
+          "name": "DependencyGraph",
+          "bases": [],
+          "decorators": [],
+          "docstring": "Directed dependency graph representing internal codebase dependencies.",
+          "start_line": 48,
+          "end_line": 138,
+          "methods": [
+            {
+              "name": "__init__",
+              "params": [
+                "self",
+                "file_index: FileIndex"
+              ],
+              "return_type": "None",
+              "decorators": [],
+              "docstring": null,
+              "start_line": 54,
+              "end_line": 57,
+              "is_async": false,
+              "calls": [
+                "nx.DiGraph",
+                "self._build_graph"
+              ]
+            },
+            {
+              "name": "_build_graph",
+              "params": [
+                "self"
+              ],
+              "return_type": "None",
+              "decorators": [],
+              "docstring": "Construct the NetworkX DiGraph by resolving imports across all files in the index.",
+              "start_line": 59,
+              "end_line": 83,
+              "is_async": false,
+              "calls": [
+                "'.'.join",
+                "_build_module_lookup",
+                "len",
+                "module_lookup.get",
+                "range",
+                "raw_import.split",
+                "resolved_targets.add",
+                "self.file_index.files.items",
+                "self.file_index.files.keys",
+                "self.graph.add_edge",
+                "self.graph.add_node",
+                "set",
+                "sorted"
+              ]
+            },
+            {
+              "name": "imports_of",
+              "params": [
+                "self",
+                "file_path: str"
+              ],
+              "return_type": "list[str]",
+              "decorators": [],
+              "docstring": "Return files directly imported by `file_path` (outgoing edges / successors).",
+              "start_line": 85,
+              "end_line": 89,
+              "is_async": false,
+              "calls": [
+                "self.graph.successors",
+                "sorted"
+              ]
+            },
+            {
+              "name": "imported_by",
+              "params": [
+                "self",
+                "file_path: str"
+              ],
+              "return_type": "list[str]",
+              "decorators": [],
+              "docstring": "Return files that directly import `file_path` (incoming edges / predecessors).",
+              "start_line": 91,
+              "end_line": 95,
+              "is_async": false,
+              "calls": [
+                "self.graph.predecessors",
+                "sorted"
+              ]
+            },
+            {
+              "name": "core_hubs",
+              "params": [
+                "self",
+                "limit: int = 10"
+              ],
+              "return_type": "list[tuple[str, int]]",
+              "decorators": [],
+              "docstring": "Return the most heavily imported files (highest in-degree / Fan-In).",
+              "start_line": 97,
+              "end_line": 110,
+              "is_async": false,
+              "calls": [
+                "scored.append",
+                "scored.sort",
+                "self.graph.in_degree"
+              ]
+            },
+            {
+              "name": "impact_radius",
+              "params": [
+                "self",
+                "changed_files: list[str]"
+              ],
+              "return_type": "list[str]",
+              "decorators": [],
+              "docstring": "Return all files that directly or transitively depend on any of `changed_files`.",
+              "start_line": 112,
+              "end_line": 128,
+              "is_async": false,
+              "calls": [
+                "impacted.update",
+                "nx.ancestors",
+                "set",
+                "sorted"
+              ]
+            },
+            {
+              "name": "to_dict",
+              "params": [
+                "self"
+              ],
+              "return_type": "dict[str, dict[str, list[str]]]",
+              "decorators": [],
+              "docstring": "Serialize the dependency structure into a JSON-friendly mapping.",
+              "start_line": 130,
+              "end_line": 138,
+              "is_async": false,
+              "calls": [
+                "defaultdict",
+                "dict",
+                "self.imported_by",
+                "self.imports_of",
+                "sorted"
+              ]
+            }
+          ]
+        }
+      ],
+      "functions": [
+        {
+          "name": "_build_module_lookup",
+          "params": [
+            "files: list[str]"
+          ],
+          "return_type": "dict[str, str]",
+          "decorators": [],
+          "docstring": "Map candidate dotted module paths to relative POSIX file paths.",
+          "start_line": 13,
+          "end_line": 45,
+          "is_async": false,
+          "calls": [
+            "'.'.join",
+            "Path",
+            "len",
+            "list",
+            "p.with_suffix"
+          ]
+        }
+      ],
+      "routes": []
+    },
+    "groma/manifest.py": {
+      "path": "groma/manifest.py",
+      "language": "python",
+      "size": 5480,
+      "lines_of_code": 161,
+      "module_docstring": "SHA-256 snapshot, fast size/mtime cache check, project fingerprinting, and diff engine.",
+      "imports": [
+        "__future__",
+        "__future__.annotations",
+        "collections",
+        "collections.defaultdict",
+        "groma.schema",
+        "groma.schema.DiffResult",
+        "groma.schema.FileHashEntry",
+        "groma.schema.Manifest",
+        "hashlib",
+        "pathlib",
+        "pathlib.Path"
+      ],
+      "classes": [],
+      "functions": [
+        {
+          "name": "compute_file_sha256",
+          "params": [
+            "file_path: Path"
+          ],
+          "return_type": "str",
+          "decorators": [],
+          "docstring": "Stream a file in 64 KB chunks and return its SHA-256 hex digest.",
+          "start_line": 16,
+          "end_line": 22,
+          "is_async": false,
+          "calls": [
+            "f.read",
+            "file_path.open",
+            "hasher.hexdigest",
+            "hasher.update",
+            "hashlib.sha256"
+          ]
+        },
+        {
+          "name": "compute_project_fingerprint",
+          "params": [
+            "files: dict[str, FileHashEntry]"
+          ],
+          "return_type": "str",
+          "decorators": [],
+          "docstring": "Compute a single deterministic summary SHA-256 over all sorted path:hash pairs.",
+          "start_line": 25,
+          "end_line": 31,
+          "is_async": false,
+          "calls": [
+            "f'{rel_path}:{entry.hash}\\n'.encode",
+            "files.keys",
+            "hasher.hexdigest",
+            "hasher.update",
+            "hashlib.sha256",
+            "sorted"
+          ]
+        },
+        {
+          "name": "build_manifest",
+          "params": [
+            "repo_root: Path",
+            "scanned_files: list[tuple[str, str]]",
+            "frameworks: list[str] | None = None",
+            "previous_manifest: Manifest | None = None",
+            "project_name: str | None = None"
+          ],
+          "return_type": "Manifest",
+          "decorators": [],
+          "docstring": "Build a fresh Manifest for the scanned files, reusing cached hashes when unchanged.",
+          "start_line": 34,
+          "end_line": 85,
+          "is_async": false,
+          "calls": [
+            "FileHashEntry",
+            "Manifest",
+            "abs",
+            "abs_path.stat",
+            "compute_file_sha256",
+            "compute_project_fingerprint",
+            "prev_files.get",
+            "repo_root.resolve",
+            "sorted"
+          ]
+        },
+        {
+          "name": "diff_manifests",
+          "params": [
+            "old_manifest: Manifest",
+            "new_manifest: Manifest"
+          ],
+          "return_type": "DiffResult",
+          "decorators": [],
+          "docstring": "Compare an existing baseline Manifest against a current Manifest.",
+          "start_line": 88,
+          "end_line": 144,
+          "is_async": false,
+          "calls": [
+            "DiffResult",
+            "candidates.pop",
+            "defaultdict",
+            "deleted_by_hash.get",
+            "deleted_by_hash[old_files[del_path].hash].append",
+            "final_added.append",
+            "matched_deleted.add",
+            "modified.append",
+            "new_files.keys",
+            "old_files.keys",
+            "set",
+            "sorted",
+            "unchanged.append"
+          ]
+        },
+        {
+          "name": "save_manifest",
+          "params": [
+            "repo_root: Path",
+            "manifest: Manifest"
+          ],
+          "return_type": "Path",
+          "decorators": [],
+          "docstring": "Write `.groma/manifest.json` to disk and return the saved file path.",
+          "start_line": 147,
+          "end_line": 152,
+          "is_async": false,
+          "calls": [
+            "manifest.model_dump_json",
+            "manifest_path.parent.mkdir",
+            "manifest_path.write_text",
+            "repo_root.resolve"
+          ]
+        },
+        {
+          "name": "load_manifest",
+          "params": [
+            "repo_root: Path"
+          ],
+          "return_type": "Manifest | None",
+          "decorators": [],
+          "docstring": "Load `.groma/manifest.json` from disk, or return None if it does not exist.",
+          "start_line": 155,
+          "end_line": 161,
+          "is_async": false,
+          "calls": [
+            "Manifest.model_validate_json",
+            "manifest_path.is_file",
+            "manifest_path.read_text",
+            "repo_root.resolve"
+          ]
+        }
+      ],
+      "routes": []
+    },
+    "groma/parsers/__init__.py": {
+      "path": "groma/parsers/__init__.py",
+      "language": "python",
+      "size": 3164,
+      "lines_of_code": 94,
+      "module_docstring": "Language parsers dispatcher, FileIndex cache, and file-index.json persistence.",
+      "imports": [
+        "__future__",
+        "__future__.annotations",
+        "groma.parsers.python_ast",
+        "groma.parsers.python_ast.parse_python_file",
+        "groma.schema",
+        "groma.schema.FileAnalysis",
+        "groma.schema.FileIndex",
+        "pathlib",
+        "pathlib.Path"
+      ],
+      "classes": [],
+      "functions": [
+        {
+          "name": "parse_source_file",
+          "params": [
+            "repo_root: Path",
+            "rel_posix_path: str",
+            "language: str"
+          ],
+          "return_type": "FileAnalysis",
+          "decorators": [],
+          "docstring": "Dispatch a source file to the appropriate parser based on its language.",
+          "start_line": 13,
+          "end_line": 34,
+          "is_async": false,
+          "calls": [
+            "(repo_root / rel_posix_path).resolve",
+            "FileAnalysis",
+            "abs_path.read_bytes",
+            "len",
+            "parse_python_file",
+            "raw.decode",
+            "raw.decode('utf-8', errors='replace').splitlines"
+          ]
+        },
+        {
+          "name": "build_file_index",
+          "params": [
+            "repo_root: Path",
+            "scanned_files: list[tuple[str, str]]",
+            "previous_index: FileIndex | None = None",
+            "changed_files: set[str] | None = None",
+            "project_name: str | None = None"
+          ],
+          "return_type": "FileIndex",
+          "decorators": [],
+          "docstring": "Build or update a FileIndex across all tracked files.",
+          "start_line": 37,
+          "end_line": 74,
+          "is_async": false,
+          "calls": [
+            "FileIndex",
+            "parse_source_file",
+            "repo_root.resolve"
+          ]
+        },
+        {
+          "name": "save_file_index",
+          "params": [
+            "repo_root: Path",
+            "file_index: FileIndex"
+          ],
+          "return_type": "Path",
+          "decorators": [],
+          "docstring": "Save `.groma/file-index.json` to disk and return the path.",
+          "start_line": 77,
+          "end_line": 82,
+          "is_async": false,
+          "calls": [
+            "dest.parent.mkdir",
+            "dest.write_text",
+            "file_index.model_dump_json",
+            "repo_root.resolve"
+          ]
+        },
+        {
+          "name": "load_file_index",
+          "params": [
+            "repo_root: Path"
+          ],
+          "return_type": "FileIndex | None",
+          "decorators": [],
+          "docstring": "Load `.groma/file-index.json` from disk, or return None if missing/invalid.",
+          "start_line": 85,
+          "end_line": 94,
+          "is_async": false,
+          "calls": [
+            "FileIndex.model_validate_json",
+            "repo_root.resolve",
+            "src.is_file",
+            "src.read_text"
+          ]
+        }
+      ],
+      "routes": []
+    },
+    "groma/parsers/python_ast.py": {
+      "path": "groma/parsers/python_ast.py",
+      "language": "python",
+      "size": 11664,
+      "lines_of_code": 328,
+      "module_docstring": "Built-in Python AST parser extracting classes, functions, calls, imports, and HTTP routes.",
+      "imports": [
+        "__future__",
+        "__future__.annotations",
+        "ast",
+        "groma.schema",
+        "groma.schema.ClassInfo",
+        "groma.schema.FileAnalysis",
+        "groma.schema.FunctionInfo",
+        "groma.schema.RouteInfo",
+        "pathlib",
+        "pathlib.Path"
+      ],
+      "classes": [],
+      "functions": [
+        {
+          "name": "_safe_unparse",
+          "params": [
+            "node: ast.AST | None",
+            "default: str = ''"
+          ],
+          "return_type": "str",
+          "decorators": [],
+          "docstring": "Safely convert an AST node to source text, returning default on failure.",
+          "start_line": 15,
+          "end_line": 22,
+          "is_async": false,
+          "calls": [
+            "ast.unparse"
+          ]
+        },
+        {
+          "name": "_format_arg",
+          "params": [
+            "arg: ast.arg",
+            "default: ast.AST | None = None"
+          ],
+          "return_type": "str",
+          "decorators": [],
+          "docstring": "Format an ast.arg with optional type annotation and default value.",
+          "start_line": 25,
+          "end_line": 36,
+          "is_async": false,
+          "calls": [
+            "_safe_unparse"
+          ]
+        },
+        {
+          "name": "_extract_parameters",
+          "params": [
+            "args_node: ast.arguments"
+          ],
+          "return_type": "list[str]",
+          "decorators": [],
+          "docstring": "Format all parameter declarations into human-readable strings.",
+          "start_line": 39,
+          "end_line": 81,
+          "is_async": false,
+          "calls": [
+            "_format_arg",
+            "_safe_unparse",
+            "len",
+            "list",
+            "params.append",
+            "zip"
+          ]
+        },
+        {
+          "name": "_clean_docstring",
+          "params": [
+            "doc: str | None"
+          ],
+          "return_type": "str | None",
+          "decorators": [],
+          "docstring": "Extract the first non-empty line of a docstring as a summary.",
+          "start_line": 84,
+          "end_line": 92,
+          "is_async": false,
+          "calls": [
+            "doc.splitlines",
+            "line.strip"
+          ]
+        },
+        {
+          "name": "_extract_call_names",
+          "params": [
+            "node: ast.AST"
+          ],
+          "return_type": "list[str]",
+          "decorators": [],
+          "docstring": "Recursively collect unique function/method call names within an AST node.",
+          "start_line": 95,
+          "end_line": 103,
+          "is_async": false,
+          "calls": [
+            "_safe_unparse",
+            "_safe_unparse(child.func).strip",
+            "ast.walk",
+            "calls.add",
+            "isinstance",
+            "set",
+            "sorted"
+          ]
+        },
+        {
+          "name": "_extract_decorator_str",
+          "params": [
+            "dec_node: ast.AST"
+          ],
+          "return_type": "str",
+          "decorators": [],
+          "docstring": "Unparse a decorator node into an '@expr' string.",
+          "start_line": 106,
+          "end_line": 109,
+          "is_async": false,
+          "calls": [
+            "_safe_unparse"
+          ]
+        },
+        {
+          "name": "_extract_routes_from_decorators",
+          "params": [
+            "decorators: list[ast.AST]",
+            "handler_name: str",
+            "line_no: int"
+          ],
+          "return_type": "list[RouteInfo]",
+          "decorators": [],
+          "docstring": "Inspect decorators for HTTP route signatures (FastAPI, Flask, Starlette, Express).",
+          "start_line": 112,
+          "end_line": 174,
+          "is_async": false,
+          "calls": [
+            "RouteInfo",
+            "elt.value.upper",
+            "func.attr.lower",
+            "func.attr.upper",
+            "isinstance",
+            "methods.append",
+            "routes.append"
+          ]
+        },
+        {
+          "name": "_parse_function",
+          "params": [
+            "node: ast.FunctionDef | ast.AsyncFunctionDef"
+          ],
+          "return_type": "tuple[FunctionInfo, list[RouteInfo]]",
+          "decorators": [],
+          "docstring": "Convert an AST function definition into FunctionInfo and RouteInfo entries.",
+          "start_line": 177,
+          "end_line": 203,
+          "is_async": false,
+          "calls": [
+            "FunctionInfo",
+            "_clean_docstring",
+            "_extract_call_names",
+            "_extract_decorator_str",
+            "_extract_parameters",
+            "_extract_routes_from_decorators",
+            "_safe_unparse",
+            "ast.get_docstring",
+            "isinstance"
+          ]
+        },
+        {
+          "name": "_parse_class",
+          "params": [
+            "node: ast.ClassDef"
+          ],
+          "return_type": "tuple[ClassInfo, list[RouteInfo]]",
+          "decorators": [],
+          "docstring": "Convert an AST class definition into ClassInfo and any nested RouteInfo entries.",
+          "start_line": 206,
+          "end_line": 236,
+          "is_async": false,
+          "calls": [
+            "ClassInfo",
+            "_clean_docstring",
+            "_extract_decorator_str",
+            "_parse_function",
+            "_safe_unparse",
+            "ast.get_docstring",
+            "bases.append",
+            "class_routes.extend",
+            "isinstance",
+            "methods.append"
+          ]
+        },
+        {
+          "name": "_resolve_relative_import",
+          "params": [
+            "base_rel_path: str",
+            "level: int",
+            "module: str | None"
+          ],
+          "return_type": "str",
+          "decorators": [],
+          "docstring": "Resolve Python relative import (e.g. level=1, module='schema') to a dotted module path.",
+          "start_line": 239,
+          "end_line": 250,
+          "is_async": false,
+          "calls": [
+            "'.'.join",
+            "Path",
+            "list"
+          ]
+        },
+        {
+          "name": "parse_python_file",
+          "params": [
+            "repo_root: Path",
+            "rel_posix_path: str"
+          ],
+          "return_type": "FileAnalysis",
+          "decorators": [],
+          "docstring": "Parse a Python source file using ast into the unified FileAnalysis model.",
+          "start_line": 253,
+          "end_line": 328,
+          "is_async": false,
+          "calls": [
+            "(repo_root / rel_posix_path).resolve",
+            "FileAnalysis",
+            "_clean_docstring",
+            "_parse_class",
+            "_parse_function",
+            "_resolve_relative_import",
+            "abs_path.read_bytes",
+            "ast.get_docstring",
+            "ast.parse",
+            "classes.append",
+            "content.splitlines",
+            "functions.append",
+            "imports_set.add",
+            "isinstance",
+            "len",
+            "raw_bytes.decode",
+            "routes.extend",
+            "set",
+            "sorted"
+          ]
+        }
+      ],
+      "routes": []
+    },
+    "groma/scanner.py": {
+      "path": "groma/scanner.py",
+      "language": "python",
+      "size": 11978,
+      "lines_of_code": 398,
+      "module_docstring": "Repository scanner, .gitignore filter, dependency-file filter, and framework detector.",
+      "imports": [
+        "__future__",
+        "__future__.annotations",
+        "dataclasses",
+        "dataclasses.dataclass",
+        "dataclasses.field",
+        "json",
+        "os",
+        "pathlib",
+        "pathlib.Path",
+        "pathspec",
+        "re"
+      ],
+      "classes": [
+        {
+          "name": "ScanResult",
+          "bases": [],
+          "decorators": [
+            "@dataclass"
+          ],
+          "docstring": "Output of scanning a target repository.",
+          "start_line": 213,
+          "end_line": 217,
+          "methods": []
+        }
+      ],
+      "functions": [
+        {
+          "name": "is_dependency_file",
+          "params": [
+            "rel_posix_path: str"
+          ],
+          "return_type": "bool",
+          "decorators": [],
+          "docstring": "Return True if the file is a dependency manifest or lockfile.",
+          "start_line": 220,
+          "end_line": 227,
+          "is_async": false,
+          "calls": [
+            "Path",
+            "Path(rel_posix_path).name.lower",
+            "name_lower.endswith",
+            "name_lower.startswith"
+          ]
+        },
+        {
+          "name": "load_ignore_spec",
+          "params": [
+            "repo_root: Path"
+          ],
+          "return_type": "pathspec.PathSpec",
+          "decorators": [],
+          "docstring": "Combine default ignore patterns with all `.gitignore` files in the repository.",
+          "start_line": 230,
+          "end_line": 242,
+          "is_async": false,
+          "calls": [
+            "list",
+            "pathspec.PathSpec.from_lines",
+            "patterns.extend",
+            "root_gitignore.is_file",
+            "root_gitignore.read_text",
+            "root_gitignore.read_text(encoding='utf-8', errors='ignore').splitlines"
+          ]
+        },
+        {
+          "name": "_load_nested_gitignore_patterns",
+          "params": [
+            "repo_root: Path",
+            "dir_path: Path"
+          ],
+          "return_type": "list[str]",
+          "decorators": [],
+          "docstring": "Load patterns from a nested `.gitignore` scoped to its relative directory.",
+          "start_line": 245,
+          "end_line": 270,
+          "is_async": false,
+          "calls": [
+            "dir_path.relative_to",
+            "dir_path.relative_to(repo_root).as_posix",
+            "line.lstrip",
+            "line.startswith",
+            "line[1:].lstrip",
+            "nested_gitignore.is_file",
+            "nested_gitignore.read_text",
+            "nested_gitignore.read_text(encoding='utf-8', errors='ignore').splitlines",
+            "raw_line.strip",
+            "scoped_patterns.append"
+          ]
+        },
+        {
+          "name": "detect_frameworks",
+          "params": [
+            "repo_root: Path"
+          ],
+          "return_type": "list[str]",
+          "decorators": [],
+          "docstring": "Passively inspect project manifests to detect frameworks without tracking those files.",
+          "start_line": 273,
+          "end_line": 333,
+          "is_async": false,
+          "calls": [
+            "JS_FRAMEWORK_SIGNATURES.items",
+            "PHP_FRAMEWORK_SIGNATURES.items",
+            "PYTHON_FRAMEWORK_SIGNATURES.items",
+            "composer_json_path.is_file",
+            "composer_json_path.read_text",
+            "data.get",
+            "deps.update",
+            "detected.add",
+            "isinstance",
+            "json.loads",
+            "package_json_path.is_file",
+            "package_json_path.read_text",
+            "pyproject_path.is_file",
+            "pyproject_path.read_text",
+            "pyproject_path.read_text(encoding='utf-8', errors='ignore').lower",
+            "re.escape",
+            "re.search",
+            "repo_root.glob",
+            "req_file.is_file",
+            "req_file.read_text",
+            "req_file.read_text(encoding='utf-8', errors='ignore').lower",
+            "set",
+            "sorted"
+          ]
+        },
+        {
+          "name": "scan_repository",
+          "params": [
+            "repo_root: Path"
+          ],
+          "return_type": "ScanResult",
+          "decorators": [],
+          "docstring": "Walk the repository, ignoring all .gitignore matches and dependency files.",
+          "start_line": 336,
+          "end_line": 398,
+          "is_async": false,
+          "calls": [
+            "(current_dir / d).relative_to",
+            "(current_dir / d).relative_to(repo_root).as_posix",
+            "EXTENSION_LANGUAGE_MAP.get",
+            "Path",
+            "ScanResult",
+            "_load_nested_gitignore_patterns",
+            "base_patterns.extend",
+            "detect_frameworks",
+            "file_path.relative_to",
+            "file_path.relative_to(repo_root).as_posix",
+            "file_path.suffix.lower",
+            "ignore_spec.match_file",
+            "is_dependency_file",
+            "kept_dirs.append",
+            "list",
+            "os.walk",
+            "pathspec.PathSpec.from_lines",
+            "repo_root.resolve",
+            "root_gitignore.is_file",
+            "root_gitignore.read_text",
+            "root_gitignore.read_text(encoding='utf-8', errors='ignore').splitlines",
+            "sorted",
+            "tracked_files.append",
+            "tracked_files.sort"
+          ]
+        }
+      ],
+      "routes": []
+    },
+    "groma/schema.py": {
+      "path": "groma/schema.py",
+      "language": "python",
+      "size": 7146,
+      "lines_of_code": 174,
+      "module_docstring": "Unified data contract (Pydantic v2 models) for Groma.",
+      "imports": [
+        "__future__",
+        "__future__.annotations",
+        "datetime",
+        "datetime.datetime",
+        "datetime.timezone",
+        "pydantic",
+        "pydantic.BaseModel",
+        "pydantic.Field"
+      ],
+      "classes": [
+        {
+          "name": "FileHashEntry",
+          "bases": [
+            "BaseModel"
+          ],
+          "decorators": [],
+          "docstring": "Per-file snapshot metadata stored in .groma/manifest.json.",
+          "start_line": 24,
+          "end_line": 30,
+          "methods": []
+        },
+        {
+          "name": "Manifest",
+          "bases": [
+            "BaseModel"
+          ],
+          "decorators": [],
+          "docstring": "Complete repository hash baseline stored at .groma/manifest.json.",
+          "start_line": 33,
+          "end_line": 51,
+          "methods": []
+        },
+        {
+          "name": "DiffResult",
+          "bases": [
+            "BaseModel"
+          ],
+          "decorators": [],
+          "docstring": "Comparison result between disk state and .groma/manifest.json.",
+          "start_line": 54,
+          "end_line": 80,
+          "methods": [
+            {
+              "name": "is_clean",
+              "params": [
+                "self"
+              ],
+              "return_type": "bool",
+              "decorators": [
+                "@property"
+              ],
+              "docstring": "Return True if no files were added, modified, deleted, or renamed.",
+              "start_line": 73,
+              "end_line": 75,
+              "is_async": false,
+              "calls": []
+            },
+            {
+              "name": "changed_files",
+              "params": [
+                "self"
+              ],
+              "return_type": "list[str]",
+              "decorators": [
+                "@property"
+              ],
+              "docstring": "Return all paths that require re-parsing or graph updates.",
+              "start_line": 78,
+              "end_line": 80,
+              "is_async": false,
+              "calls": [
+                "list",
+                "self.renamed.values",
+                "set",
+                "sorted"
+              ]
+            }
+          ]
+        },
+        {
+          "name": "FunctionInfo",
+          "bases": [
+            "BaseModel"
+          ],
+          "decorators": [],
+          "docstring": "Extracted metadata for a standalone function or class method.",
+          "start_line": 88,
+          "end_line": 110,
+          "methods": []
+        },
+        {
+          "name": "ClassInfo",
+          "bases": [
+            "BaseModel"
+          ],
+          "decorators": [],
+          "docstring": "Extracted metadata for a class definition.",
+          "start_line": 113,
+          "end_line": 126,
+          "methods": []
+        },
+        {
+          "name": "RouteInfo",
+          "bases": [
+            "BaseModel"
+          ],
+          "decorators": [],
+          "docstring": "Extracted HTTP route / endpoint definition (e.g. FastAPI, Flask, Express).",
+          "start_line": 129,
+          "end_line": 135,
+          "methods": []
+        },
+        {
+          "name": "FileAnalysis",
+          "bases": [
+            "BaseModel"
+          ],
+          "decorators": [],
+          "docstring": "Unified, language-agnostic structural analysis of a single source file.",
+          "start_line": 138,
+          "end_line": 160,
+          "methods": []
+        },
+        {
+          "name": "FileIndex",
+          "bases": [
+            "BaseModel"
+          ],
+          "decorators": [],
+          "docstring": "Cached AST symbol index stored at .groma/file-index.json.",
+          "start_line": 163,
+          "end_line": 174,
+          "methods": []
+        }
+      ],
+      "functions": [
+        {
+          "name": "utc_now_iso",
+          "params": [],
+          "return_type": "str",
+          "decorators": [],
+          "docstring": "Return the current UTC timestamp in ISO-8601 format.",
+          "start_line": 14,
+          "end_line": 16,
+          "is_async": false,
+          "calls": [
+            "datetime.now",
+            "datetime.now(timezone.utc).isoformat"
+          ]
+        }
+      ],
+      "routes": []
+    },
+    "tests/test_cli.py": {
+      "path": "tests/test_cli.py",
+      "language": "python",
+      "size": 3241,
+      "lines_of_code": 83,
+      "module_docstring": "Integration tests for the Groma CLI commands: scan, check, and update.",
+      "imports": [
+        "groma.cli",
+        "groma.cli.app",
+        "pathlib",
+        "pathlib.Path",
+        "typer.testing",
+        "typer.testing.CliRunner"
+      ],
+      "classes": [],
+      "functions": [
+        {
+          "name": "test_cli_version",
+          "params": [],
+          "return_type": "None",
+          "decorators": [],
+          "docstring": "Verify --version option outputs version string.",
+          "start_line": 12,
+          "end_line": 16,
+          "is_async": false,
+          "calls": [
+            "runner.invoke"
+          ]
+        },
+        {
+          "name": "test_cli_check_fails_without_baseline",
+          "params": [
+            "tmp_path: Path"
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "docstring": "Verify groma check returns code 1 if no baseline manifest exists.",
+          "start_line": 19,
+          "end_line": 23,
+          "is_async": false,
+          "calls": [
+            "runner.invoke",
+            "str"
+          ]
+        },
+        {
+          "name": "test_cli_full_lifecycle_scan_check_update",
+          "params": [
+            "tmp_path: Path"
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "docstring": "Test full command lifecycle: scan -> check clean -> edit -> check stale -> update -> check clean.",
+          "start_line": 26,
+          "end_line": 72,
+          "is_async": false,
+          "calls": [
+            "(app_dir / 'api.py').write_text",
+            "(app_dir / 'auth.py').write_text",
+            "(app_dir / 'db.py').write_text",
+            "(tmp_path / '.groma' / 'architecture.md').is_file",
+            "(tmp_path / '.groma' / 'dependencies.md').is_file",
+            "(tmp_path / '.groma' / 'file-index.json').is_file",
+            "(tmp_path / '.groma' / 'file-map.md').is_file",
+            "(tmp_path / '.groma' / 'manifest.json').is_file",
+            "app_dir.mkdir",
+            "runner.invoke",
+            "str"
+          ]
+        },
+        {
+          "name": "test_cli_update_when_clean",
+          "params": [
+            "tmp_path: Path"
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "docstring": "Verify groma update reports already up to date when clean.",
+          "start_line": 75,
+          "end_line": 82,
+          "is_async": false,
+          "calls": [
+            "(tmp_path / 'main.py').write_text",
+            "runner.invoke",
+            "str"
+          ]
+        }
+      ],
+      "routes": []
+    },
+    "tests/test_generators.py": {
+      "path": "tests/test_generators.py",
+      "language": "python",
+      "size": 5224,
+      "lines_of_code": 167,
+      "module_docstring": "Unit tests for Groma's markdown and SKILL.md document generators.",
+      "imports": [
+        "groma.generators",
+        "groma.generators.generate_all_docs",
+        "groma.generators.markdown",
+        "groma.generators.markdown.generate_architecture_doc",
+        "groma.generators.markdown.generate_dependencies_doc",
+        "groma.generators.markdown.generate_file_map_doc",
+        "groma.generators.skill",
+        "groma.generators.skill.generate_skill_doc",
+        "groma.graph",
+        "groma.graph.DependencyGraph",
+        "groma.schema",
+        "groma.schema.ClassInfo",
+        "groma.schema.FileAnalysis",
+        "groma.schema.FileHashEntry",
+        "groma.schema.FileIndex",
+        "groma.schema.FunctionInfo",
+        "groma.schema.Manifest",
+        "groma.schema.RouteInfo",
+        "pathlib",
+        "pathlib.Path"
+      ],
+      "classes": [],
+      "functions": [
+        {
+          "name": "_sample_fixtures",
+          "params": [],
+          "return_type": "tuple[Manifest, FileIndex, DependencyGraph]",
+          "decorators": [],
+          "docstring": "Create sample Manifest, FileIndex, and DependencyGraph for generator testing.",
+          "start_line": 24,
+          "end_line": 102,
+          "is_async": false,
+          "calls": [
+            "ClassInfo",
+            "DependencyGraph",
+            "FileAnalysis",
+            "FileHashEntry",
+            "FileIndex",
+            "FunctionInfo",
+            "Manifest",
+            "RouteInfo"
+          ]
+        },
+        {
+          "name": "test_generate_architecture_doc",
+          "params": [],
+          "return_type": "None",
+          "decorators": [],
+          "docstring": "Verify architecture.md includes overview, hubs, and route table.",
+          "start_line": 105,
+          "end_line": 114,
+          "is_async": false,
+          "calls": [
+            "_sample_fixtures",
+            "generate_architecture_doc"
+          ]
+        },
+        {
+          "name": "test_generate_file_map_doc",
+          "params": [],
+          "return_type": "None",
+          "decorators": [],
+          "docstring": "Verify file-map.md documents classes, functions, and lines.",
+          "start_line": 117,
+          "end_line": 126,
+          "is_async": false,
+          "calls": [
+            "_sample_fixtures",
+            "generate_file_map_doc"
+          ]
+        },
+        {
+          "name": "test_generate_dependencies_doc",
+          "params": [],
+          "return_type": "None",
+          "decorators": [],
+          "docstring": "Verify dependencies.md documents internal imports and imported_by.",
+          "start_line": 129,
+          "end_line": 137,
+          "is_async": false,
+          "calls": [
+            "_sample_fixtures",
+            "generate_dependencies_doc"
+          ]
+        },
+        {
+          "name": "test_generate_skill_doc",
+          "params": [],
+          "return_type": "None",
+          "decorators": [],
+          "docstring": "Verify SKILL.md YAML frontmatter and rules.",
+          "start_line": 140,
+          "end_line": 149,
+          "is_async": false,
+          "calls": [
+            "_sample_fixtures",
+            "generate_skill_doc"
+          ]
+        },
+        {
+          "name": "test_generate_all_docs_on_disk",
+          "params": [
+            "tmp_path: Path"
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "docstring": "Verify render_all_docs creates markdown, skill, and rule files on disk.",
+          "start_line": 152,
+          "end_line": 166,
+          "is_async": false,
+          "calls": [
+            "(tmp_path / '.agents' / 'rules' / 'groma-sync.md').is_file",
+            "(tmp_path / '.agents' / 'skills' / 'my-service-knowledge' / 'SKILL.md').is_file",
+            "(tmp_path / '.cursorrules').is_file",
+            "(tmp_path / '.groma' / 'architecture.md').is_file",
+            "(tmp_path / '.groma' / 'dependencies.md').is_file",
+            "(tmp_path / '.groma' / 'file-map.md').is_file",
+            "_sample_fixtures",
+            "generate_all_docs",
+            "len",
+            "p.is_file"
+          ]
+        }
+      ],
+      "routes": []
+    },
+    "tests/test_graph.py": {
+      "path": "tests/test_graph.py",
+      "language": "python",
+      "size": 3088,
+      "lines_of_code": 88,
+      "module_docstring": "Unit tests for Groma's NetworkX dependency graph and impact radius engine.",
+      "imports": [
+        "groma.graph",
+        "groma.graph.DependencyGraph",
+        "groma.graph._build_module_lookup",
+        "groma.schema",
+        "groma.schema.FileAnalysis",
+        "groma.schema.FileIndex"
+      ],
+      "classes": [],
+      "functions": [
+        {
+          "name": "test_build_module_lookup",
+          "params": [],
+          "return_type": "None",
+          "decorators": [],
+          "docstring": "Verify conversion of file paths to dotted module candidates.",
+          "start_line": 7,
+          "end_line": 21,
+          "is_async": false,
+          "calls": [
+            "_build_module_lookup"
+          ]
+        },
+        {
+          "name": "test_dependency_graph_edges_hubs_and_impact",
+          "params": [],
+          "return_type": "None",
+          "decorators": [],
+          "docstring": "Verify directed edge creation, core hubs ranking, and transitive impact radius.",
+          "start_line": 24,
+          "end_line": 87,
+          "is_async": false,
+          "calls": [
+            "DependencyGraph",
+            "FileAnalysis",
+            "FileIndex",
+            "dep_graph.core_hubs",
+            "dep_graph.impact_radius",
+            "dep_graph.imported_by",
+            "dep_graph.imports_of"
+          ]
+        }
+      ],
+      "routes": []
+    },
+    "tests/test_manifest.py": {
+      "path": "tests/test_manifest.py",
+      "language": "python",
+      "size": 3467,
+      "lines_of_code": 91,
+      "module_docstring": "Unit tests for Groma's SHA-256 manifest builder, fast cache check, and diff engine.",
+      "imports": [
+        "groma.manifest",
+        "groma.manifest.build_manifest",
+        "groma.manifest.compute_file_sha256",
+        "groma.manifest.diff_manifests",
+        "groma.manifest.load_manifest",
+        "groma.manifest.save_manifest",
+        "groma.scanner",
+        "groma.scanner.scan_repository",
+        "pathlib",
+        "pathlib.Path",
+        "unittest.mock",
+        "unittest.mock.patch"
+      ],
+      "classes": [],
+      "functions": [
+        {
+          "name": "test_build_manifest_and_fast_cache_reuse",
+          "params": [
+            "tmp_path: Path"
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "docstring": "Verify build_manifest hashes files and reuses cached hashes when size & mtime match.",
+          "start_line": 16,
+          "end_line": 38,
+          "is_async": false,
+          "calls": [
+            "build_manifest",
+            "compute_file_sha256",
+            "file_a.write_text",
+            "mock_hash.assert_not_called",
+            "patch",
+            "scan_repository"
+          ]
+        },
+        {
+          "name": "test_diff_manifests_added_modified_deleted_renamed_unchanged",
+          "params": [
+            "tmp_path: Path"
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "docstring": "Verify diff_manifests accurately classifies all 5 change categories including renames.",
+          "start_line": 41,
+          "end_line": 71,
+          "is_async": false,
+          "calls": [
+            "(tmp_path / 'brand_new.py').write_text",
+            "(tmp_path / 'deleted.py').unlink",
+            "(tmp_path / 'deleted.py').write_text",
+            "(tmp_path / 'modified.py').write_text",
+            "(tmp_path / 'old_name.py').rename",
+            "(tmp_path / 'old_name.py').write_text",
+            "(tmp_path / 'unchanged.py').write_text",
+            "build_manifest",
+            "diff_manifests",
+            "scan_repository"
+          ]
+        },
+        {
+          "name": "test_save_and_load_manifest_persistence",
+          "params": [
+            "tmp_path: Path"
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "docstring": "Verify .groma/manifest.json saves and loads cleanly.",
+          "start_line": 74,
+          "end_line": 90,
+          "is_async": false,
+          "calls": [
+            "(tmp_path / '.groma' / 'manifest.json').resolve",
+            "(tmp_path / 'app.py').write_text",
+            "build_manifest",
+            "load_manifest",
+            "save_manifest",
+            "saved_path.is_file",
+            "scan_repository"
+          ]
+        }
+      ],
+      "routes": []
+    },
+    "tests/test_python_ast.py": {
+      "path": "tests/test_python_ast.py",
+      "language": "python",
+      "size": 4581,
+      "lines_of_code": 139,
+      "module_docstring": "Unit tests for Groma's Python AST parser and file-index cache.",
+      "imports": [
+        "groma.parsers",
+        "groma.parsers.build_file_index",
+        "groma.parsers.load_file_index",
+        "groma.parsers.python_ast",
+        "groma.parsers.python_ast.parse_python_file",
+        "groma.parsers.save_file_index",
+        "pathlib",
+        "pathlib.Path"
+      ],
+      "classes": [],
+      "functions": [
+        {
+          "name": "test_parse_python_classes_functions_and_calls",
+          "params": [
+            "tmp_path: Path"
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "docstring": "Verify AST extraction of classes, methods, functions, type hints, and calls.",
+          "start_line": 9,
+          "end_line": 63,
+          "is_async": false,
+          "calls": [
+            "len",
+            "parse_python_file",
+            "py_file.write_text"
+          ]
+        },
+        {
+          "name": "test_parse_http_routes",
+          "params": [
+            "tmp_path: Path"
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "docstring": "Verify route extraction for FastAPI, Flask, and router decorators.",
+          "start_line": 66,
+          "end_line": 95,
+          "is_async": false,
+          "calls": [
+            "(tmp_path / 'api.py').write_text",
+            "len",
+            "parse_python_file"
+          ]
+        },
+        {
+          "name": "test_syntax_error_resilience",
+          "params": [
+            "tmp_path: Path"
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "docstring": "Verify parser returns basic stats without raising an exception on invalid syntax.",
+          "start_line": 98,
+          "end_line": 108,
+          "is_async": false,
+          "calls": [
+            "(tmp_path / 'broken.py').write_text",
+            "parse_python_file"
+          ]
+        },
+        {
+          "name": "test_file_index_building_and_caching",
+          "params": [
+            "tmp_path: Path"
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "docstring": "Verify build_file_index, incremental reuse, and save/load file-index.json.",
+          "start_line": 111,
+          "end_line": 139,
+          "is_async": false,
+          "calls": [
+            "(tmp_path / 'a.py').write_text",
+            "(tmp_path / 'b.py').write_text",
+            "build_file_index",
+            "load_file_index",
+            "save_file_index",
+            "save_path.is_file"
+          ]
+        }
+      ],
+      "routes": []
+    },
+    "tests/test_scanner.py": {
+      "path": "tests/test_scanner.py",
+      "language": "python",
+      "size": 4807,
+      "lines_of_code": 111,
+      "module_docstring": "Unit tests for Groma's repository scanner, .gitignore filter, and dependency exclusions.",
+      "imports": [
+        "groma.scanner",
+        "groma.scanner.detect_frameworks",
+        "groma.scanner.is_dependency_file",
+        "groma.scanner.scan_repository",
+        "json",
+        "pathlib",
+        "pathlib.Path"
+      ],
+      "classes": [],
+      "functions": [
+        {
+          "name": "test_ignores_all_gitignore_files_and_directories",
+          "params": [
+            "tmp_path: Path"
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "docstring": "Verify every file and folder matched by .gitignore is ignored.",
+          "start_line": 9,
+          "end_line": 36,
+          "is_async": false,
+          "calls": [
+            "(build_dir / 'generated.js').write_text",
+            "(ignored_dir / 'inside.py').write_text",
+            "(src_dir / 'app.ts').write_text",
+            "(tmp_path / '.gitignore').write_text",
+            "(tmp_path / 'auth.secret.py').write_text",
+            "(tmp_path / 'main.py').write_text",
+            "(tmp_path / 'specific_ignored.py').write_text",
+            "build_dir.mkdir",
+            "ignored_dir.mkdir",
+            "scan_repository",
+            "src_dir.mkdir"
+          ]
+        },
+        {
+          "name": "test_ignores_dependency_files_and_folders_across_projects",
+          "params": [
+            "tmp_path: Path"
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "docstring": "Verify dependency manifests, lockfiles, and vendor/venv dirs are never tracked.",
+          "start_line": 39,
+          "end_line": 89,
+          "is_async": false,
+          "calls": [
+            "(node_modules / 'index.js').write_text",
+            "(tmp_path / 'Cargo.toml').write_text",
+            "(tmp_path / 'Pipfile').write_text",
+            "(tmp_path / 'README.md').write_text",
+            "(tmp_path / 'composer.json').write_text",
+            "(tmp_path / 'diagram.jpg').write_bytes",
+            "(tmp_path / 'go.mod').write_text",
+            "(tmp_path / 'index.js').write_text",
+            "(tmp_path / 'package-lock.json').write_text",
+            "(tmp_path / 'package.json').write_text",
+            "(tmp_path / 'pnpm-lock.yaml').write_text",
+            "(tmp_path / 'poetry.lock').write_text",
+            "(tmp_path / 'pyproject.toml').write_text",
+            "(tmp_path / 'requirements-dev.txt').write_text",
+            "(tmp_path / 'requirements.txt').write_text",
+            "(tmp_path / 'service.py').write_text",
+            "(tmp_path / 'setup.py').write_text",
+            "(tmp_path / 'uv.lock').write_text",
+            "(tmp_path / 'yarn.lock').write_text",
+            "(vendor_dir / 'lib.py').write_text",
+            "(venv_dir / 'site.py').write_text",
+            "is_dependency_file",
+            "node_modules.mkdir",
+            "scan_repository",
+            "vendor_dir.mkdir",
+            "venv_dir.mkdir"
+          ]
+        },
+        {
+          "name": "test_detect_frameworks_across_ecosystems",
+          "params": [
+            "tmp_path: Path"
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "docstring": "Verify passive framework detection from project files.",
+          "start_line": 92,
+          "end_line": 110,
+          "is_async": false,
+          "calls": [
+            "(tmp_path / 'composer.json').write_text",
+            "(tmp_path / 'package.json').write_text",
+            "(tmp_path / 'requirements.txt').write_text",
+            "detect_frameworks",
+            "json.dumps"
+          ]
+        }
+      ],
+      "routes": []
+    },
+    "tests/test_schema.py": {
+      "path": "tests/test_schema.py",
+      "language": "python",
+      "size": 4024,
+      "lines_of_code": 130,
+      "module_docstring": "Unit tests for Groma's unified Pydantic data contract (groma/schema.py).",
+      "imports": [
+        "groma.schema",
+        "groma.schema.ClassInfo",
+        "groma.schema.DiffResult",
+        "groma.schema.FileAnalysis",
+        "groma.schema.FileHashEntry",
+        "groma.schema.FileIndex",
+        "groma.schema.FunctionInfo",
+        "groma.schema.Manifest",
+        "groma.schema.RouteInfo"
+      ],
+      "classes": [],
+      "functions": [
+        {
+          "name": "test_manifest_round_trip_serialization",
+          "params": [],
+          "return_type": "None",
+          "decorators": [],
+          "docstring": "Verify Manifest and FileHashEntry serialize to JSON and deserialize identically.",
+          "start_line": 15,
+          "end_line": 38,
+          "is_async": false,
+          "calls": [
+            "FileHashEntry",
+            "Manifest",
+            "Manifest.model_validate_json",
+            "manifest.model_dump_json"
+          ]
+        },
+        {
+          "name": "test_diff_result_is_clean_and_changed_files",
+          "params": [],
+          "return_type": "None",
+          "decorators": [],
+          "docstring": "Verify DiffResult.is_clean and DiffResult.changed_files properties.",
+          "start_line": 41,
+          "end_line": 55,
+          "is_async": false,
+          "calls": [
+            "DiffResult"
+          ]
+        },
+        {
+          "name": "test_file_analysis_and_file_index_round_trip",
+          "params": [],
+          "return_type": "None",
+          "decorators": [],
+          "docstring": "Verify FileAnalysis, ClassInfo, FunctionInfo, RouteInfo, and FileIndex round-trip.",
+          "start_line": 58,
+          "end_line": 129,
+          "is_async": false,
+          "calls": [
+            "ClassInfo",
+            "FileAnalysis",
+            "FileIndex",
+            "FileIndex.model_validate_json",
+            "FunctionInfo",
+            "RouteInfo",
+            "index.model_dump_json",
+            "len"
+          ]
+        }
+      ],
+      "routes": []
+    }
+  }
+}

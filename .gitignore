@@ -8,8 +8,9 @@ __pycache__/
 *.so
 .Python
 
-.groma
 
+.groma/, .agents/, .gemini/, 
+ .cursorrules
 
 # Node.js
 node_modules/

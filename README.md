@@ -74,10 +74,10 @@ Run Groma directly from GitHub or npm with **zero manual setup**:
 
 ```bash
 # Run directly with npx
-npx git+https://github.com/YOUR_USERNAME/Groma.git scan
+npx git+https://github.com/Unknown-strange/Groma.git scan
 
 # Or install globally via npm
-npm install -g git+https://github.com/YOUR_USERNAME/Groma.git
+npm install -g git+https://github.com/Unknown-strange/Groma.git
 groma scan
 ```
 
@@ -86,7 +86,7 @@ groma scan
 `pipx` installs Groma into an isolated environment and makes the `groma` command available globally in any terminal:
 
 ```bash
-pipx install git+https://github.com/YOUR_USERNAME/Groma.git
+pipx install git+https://github.com/Unknown-strange/Groma.git
 ```
 
 Now navigate to **any project** on your machine and run:
@@ -99,14 +99,14 @@ groma scan
 ### Option C: Using `pip` (Inside a Virtual Environment)
 
 ```bash
-pip install git+https://github.com/YOUR_USERNAME/Groma.git
+pip install git+https://github.com/Unknown-strange/Groma.git
 ```
 
 ### Option D: Clone & Run Locally from Source
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/YOUR_USERNAME/Groma.git
+git clone https://github.com/Unknown-strange/Groma.git
 cd Groma
 
 # 2. Create and activate a virtual environment

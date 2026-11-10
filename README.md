@@ -1,9 +1,8 @@
-# Groma 
+# Groma
 
 > **Deterministic Codebase Knowledge, Architecture Mapping & Skill Generator for IDE AI Agents**  
-> *100% offline • Zero LLM API keys required • Sub-second incremental updates*
 
-
+![Groma System Architecture](architecture_diagram.jpg)
 
 ---
 
@@ -64,63 +63,111 @@ Because `groma check` exits with code `0` when up-to-date and code `1` when stal
 
 ## 🚀 Installation & Quick Start
 
-Groma supports **both** JavaScript/TypeScript workflows (`npx` / `npm`) and Python workflows (`pipx` / `pip`).
+Groma supports **both** JavaScript/TypeScript workflows (`npx` / `npm`) and Python workflows (`pipx` / `pip`) across **macOS**, **Linux**, and **Windows**.
 
 > **Prerequisite**: Python `3.10+` installed on your system.
 
-### Option A: Using `npx` / `npm` (For JS / TS / Web Developers)
+---
 
-Run Groma directly from GitHub or npm with **zero manual setup**:
+### Option 1: Standard Python Install (via pip)
 
+> [!TIP]
+> On macOS/Linux, modern systems require using `python3 -m pip` instead of bare `pip`. On Windows, use `py -m pip`.
+
+#### On macOS & Linux:
 ```bash
-# Run directly with npx
-npx git+https://github.com/Unknown-strange/Groma.git scan
-
-# Or install globally via npm
-npm install -g git+https://github.com/Unknown-strange/Groma.git
-groma scan
+# In your virtual environment or system:
+python3 -m pip install git+https://github.com/Unknown-strange/Groma.git
 ```
 
-### Option B: Using `pipx` (Recommended Global CLI for Python Users)
+#### On Windows (PowerShell or Command Prompt):
+```powershell
+py -m pip install git+https://github.com/Unknown-strange/Groma.git
+```
 
-`pipx` installs Groma into an isolated environment and makes the `groma` command available globally in any terminal:
+---
 
+### Option 2: Global CLI Install (via pipx — Recommended)
+
+`pipx` automatically isolates Groma into its own private environment and places the `groma` command on your system PATH so you can run it from any folder.
+
+#### On macOS & Linux:
 ```bash
+# If you don't have pipx yet: brew install pipx && pipx ensurepath
 pipx install git+https://github.com/Unknown-strange/Groma.git
 ```
 
-Now navigate to **any project** on your machine and run:
+#### On Windows:
+```powershell
+# If you don't have pipx yet: py -m pip install --user pipx && py -m pipx ensurepath
+pipx install git+https://github.com/Unknown-strange/Groma.git
+```
 
+Once installed, you can open any project directory and immediately run:
 ```bash
-cd /path/to/your-project
 groma scan
 ```
 
-### Option C: Using `pip` (Inside a Virtual Environment)
+---
 
+### Option 3: Using Node.js (via npm / npx)
+
+Web and JavaScript developers can run Groma without configuring Python virtual environments.
+
+> [!NOTE]
+> If npm shows `npm error code EALLOWGIT`, modern npm has git-based installs disabled by default. Run `npm config set allow-git true` once to allow it.
+
+#### On macOS, Linux & Windows:
 ```bash
-pip install git+https://github.com/Unknown-strange/Groma.git
+# Allow npm to fetch git repositories (run once if needed)
+npm config set allow-git true
+
+# Install globally via npm
+npm install -g git+https://github.com/Unknown-strange/Groma.git
+groma scan
+
+# Or run directly via npx
+npx git+https://github.com/Unknown-strange/Groma.git scan
 ```
 
-### Option D: Clone & Run Locally from Source
+---
 
+### Option 4: Clone & Run Locally from Source
+
+#### On macOS & Linux:
 ```bash
-# 1. Clone the repository
+# 1. Clone repository
 git clone https://github.com/Unknown-strange/Groma.git
 cd Groma
 
-# 2. Create and activate a virtual environment
+# 2. Create and activate virtual environment
 python3 -m venv .venv
 source .venv/bin/activate
 
 # 3. Install dependencies
-pip install --upgrade pip
-pip install typer rich pydantic pathspec networkx pytest ruff
+python3 -m pip install --upgrade pip
+python3 -m pip install typer rich pydantic pathspec networkx pytest ruff
 
-# 4. Run Groma (via Python or Node wrapper)
+# 4. Run Groma directly
 python -m groma scan .
-# or:
-node bin/groma.js scan .
+```
+
+#### On Windows (PowerShell):
+```powershell
+# 1. Clone repository
+git clone https://github.com/Unknown-strange/Groma.git
+cd Groma
+
+# 2. Create and activate virtual environment
+py -m venv .venv
+.venv\Scripts\Activate.ps1
+
+# 3. Install dependencies
+py -m pip install --upgrade pip
+py -m pip install typer rich pydantic pathspec networkx pytest ruff
+
+# 4. Run Groma directly
+py -m groma scan .
 ```
 
 ---

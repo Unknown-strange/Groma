@@ -1,9 +1,9 @@
-# Groma (CodeAtlas)
+# Groma 
 
 > **Deterministic Codebase Knowledge, Architecture Mapping & Skill Generator for IDE AI Agents**  
 > *100% offline • Zero LLM API keys required • Sub-second incremental updates*
 
-![Groma System Architecture](architecture_diagram.jpg)
+
 
 ---
 

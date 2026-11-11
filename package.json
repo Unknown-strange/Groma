@@ -1,6 +1,6 @@
 {
   "name": "groma",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Deterministic codebase knowledge & skill generator for IDE AI agents.",
   "main": "bin/groma.js",
   "bin": {

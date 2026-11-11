@@ -169,7 +169,7 @@
 
 ## `groma/mcp_server.py`
 
-- **Language**: `python` | **Lines**: 403 | **Size**: 15,136 bytes
+- **Language**: `python` | **Lines**: 404 | **Size**: 15,137 bytes
 - **Module Docstring**: *Built-in Model Context Protocol (MCP) JSON-RPC 2.0 server and fast symbol search engine.*
 
 ### Top-Level Functions
@@ -239,7 +239,7 @@
 
 ## `groma/parsers/universal.py`
 
-- **Language**: `python` | **Lines**: 268 | **Size**: 9,660 bytes
+- **Language**: `python` | **Lines**: 269 | **Size**: 9,661 bytes
 - **Module Docstring**: *Universal multi-language structural parser for PHP, JS/TS/Vue, Go, Rust, Java, SQL, etc.*
 
 ### Top-Level Functions
@@ -387,7 +387,7 @@
 
 ## `tests/test_mcp.py`
 
-- **Language**: `python` | **Lines**: 111 | **Size**: 3,565 bytes
+- **Language**: `python` | **Lines**: 112 | **Size**: 3,566 bytes
 - **Module Docstring**: *Unit and integration tests for Groma's MCP server and `groma find` CLI command.*
 
 ### Top-Level Functions
@@ -451,7 +451,7 @@
 
 ## `tests/test_universal_parser.py`
 
-- **Language**: `python` | **Lines**: 138 | **Size**: 4,348 bytes
+- **Language**: `python` | **Lines**: 139 | **Size**: 4,349 bytes
 - **Module Docstring**: *Unit tests for Groma's universal multi-language parser and cross-language dependency graph.*
 
 ### Top-Level Functions

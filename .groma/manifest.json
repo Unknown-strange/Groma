@@ -1,7 +1,7 @@
 {
   "project_name": "Groma",
-  "generated_at": "2026-11-11T12:18:07.772776+00:00",
-  "fingerprint": "28fe69800697a4616a365702849aa4408bcca7ccf3ec0a49b31ee334f26c4eb4",
+  "generated_at": "2026-11-11T14:41:32.942176+00:00",
+  "fingerprint": "3e61fb21da323f6779f953f721ea8a7c51e08235c42e0583dc4ea715f1dc8881",
   "languages": [
     "javascript",
     "python"
@@ -14,9 +14,9 @@
       "language": "javascript"
     },
     "groma/__init__.py": {
-      "hash": "5f8d1b1f5474b3445a71fb64cd6fd9e55562d82cb5928f87e0d653154995a1c4",
+      "hash": "8037bccb588950a067b3e25f75ea8ff3cbd55f7978fe139c4c00aa1392a1e0f6",
       "size": 110,
-      "mtime": 1794241537.706934,
+      "mtime": 1794407998.606187,
       "language": "python"
     },
     "groma/__main__.py": {
@@ -28,7 +28,7 @@
     "groma/cli.py": {
       "hash": "4bc675e06141c6fee7303eca199cee36068e33edffc205c49621549dae952079",
       "size": 11635,
-      "mtime": 1794399239.6805668,
+      "mtime": 1794400403.9313757,
       "language": "python"
     },
     "groma/generators/__init__.py": {
@@ -40,43 +40,43 @@
     "groma/generators/markdown.py": {
       "hash": "ce60364e9432f4a7c643eca8b4c4eb5a0611b1fa4794553b48f2a946233ab511",
       "size": 8182,
-      "mtime": 1794399233.907817,
+      "mtime": 1794400406.3695,
       "language": "python"
     },
     "groma/generators/rules.py": {
       "hash": "26f9bee92fa3ccfe8eef096b38b20102d8039635396e2741ac2071570f9d0486",
       "size": 3526,
-      "mtime": 1794399237.805822,
+      "mtime": 1794400406.9923892,
       "language": "python"
     },
     "groma/generators/skill.py": {
       "hash": "3917ff4bf3d8f507a06129d5050c01db2e3f29b741326d62a0d9392767e85d4d",
       "size": 4094,
-      "mtime": 1794399235.4541948,
+      "mtime": 1794400407.6353354,
       "language": "python"
     },
     "groma/graph.py": {
       "hash": "3595f341448780763cac21c10f85857da1326182565b7665339c2e6748164681",
       "size": 7548,
-      "mtime": 1794399451.777824,
+      "mtime": 1794400408.7468433,
       "language": "python"
     },
     "groma/manifest.py": {
       "hash": "da90207bbdf9cda7c70057768de56884a8faea4cdf8d9b27d0d52f8ec3ab813b",
       "size": 5549,
-      "mtime": 1794399017.0116153,
+      "mtime": 1794400409.5135777,
       "language": "python"
     },
     "groma/mcp_server.py": {
-      "hash": "4a2230d5cf41c0f9de71eb36e138ff95c607bcf3f4d3567b7424a00b9f050f37",
-      "size": 15136,
-      "mtime": 1794399170.810704,
+      "hash": "69c9f0cd942ec613807d9e0ddb7b2ee881f610bfd9f0c9f90bf035d0dee92a39",
+      "size": 15137,
+      "mtime": 1794399567.967759,
       "language": "python"
     },
     "groma/parsers/__init__.py": {
       "hash": "f5d0b0c12805e51729c39d6437d74e9eed6be70d7b3d9ccb1476b5f08d6d6bef",
       "size": 2788,
-      "mtime": 1794399064.0284448,
+      "mtime": 1794400409.6203766,
       "language": "python"
     },
     "groma/parsers/python_ast.py": {
@@ -86,21 +86,21 @@
       "language": "python"
     },
     "groma/parsers/universal.py": {
-      "hash": "8f1037872a6bf510a141c479ce25780cf21463a17dbaa573ecc371d2e458f6d7",
-      "size": 9660,
-      "mtime": 1794399062.5440135,
+      "hash": "5cba80904c9256746adf12b46016c5c927213004e256e90f77c03596e62902f6",
+      "size": 9661,
+      "mtime": 1794400410.4207408,
       "language": "python"
     },
     "groma/scanner.py": {
       "hash": "f67f1248265400b460ff6a883b14b39ceb68e3f60d71dad34374917197bf0a42",
       "size": 9298,
-      "mtime": 1794399015.3229175,
+      "mtime": 1794400410.525982,
       "language": "python"
     },
     "groma/schema.py": {
       "hash": "a4f957d8ecfa3ef5de313fd0c6ce2336c23e38d4a6bd0481b7adf193c1afcd59",
       "size": 7165,
-      "mtime": 1794399013.2439213,
+      "mtime": 1794400410.8577235,
       "language": "python"
     },
     "tests/test_cli.py": {
@@ -112,7 +112,7 @@
     "tests/test_generators.py": {
       "hash": "1581e3b98c50fa91104df58265356cde25670df8e6a3f8ffbc055a57940e8557",
       "size": 5291,
-      "mtime": 1794399300.7685719,
+      "mtime": 1794400410.9342296,
       "language": "python"
     },
     "tests/test_graph.py": {
@@ -124,13 +124,13 @@
     "tests/test_manifest.py": {
       "hash": "803247abf9f403a7e3ca4f383d522d72030de4c750d6952c987903bd982ad436",
       "size": 3461,
-      "mtime": 1794399295.917372,
+      "mtime": 1794400411.6971374,
       "language": "python"
     },
     "tests/test_mcp.py": {
-      "hash": "1d941f1754316b75576b9f05e3134bf2f453bf55c86b121bcdb0cfaa74a6bf02",
-      "size": 3565,
-      "mtime": 1794399342.0472903,
+      "hash": "6e0f44a24fb4d38d459fefdad482e5fc845525c94bd5a85ec1be3ca4fadecd26",
+      "size": 3566,
+      "mtime": 1794399571.1664286,
       "language": "python"
     },
     "tests/test_python_ast.py": {
@@ -142,19 +142,19 @@
     "tests/test_scanner.py": {
       "hash": "42a02a054b8e2232ecda32793ddfc7a97883483b20e1c8805be0dcff330e1e6f",
       "size": 5082,
-      "mtime": 1794399291.2725787,
+      "mtime": 1794400412.9936256,
       "language": "python"
     },
     "tests/test_schema.py": {
       "hash": "a03ada85b7dd28333febb1f0395b033aaba51b70feb0d1a6cc1a743fb8a979eb",
       "size": 4030,
-      "mtime": 1794399289.6154244,
+      "mtime": 1794400413.026443,
       "language": "python"
     },
     "tests/test_universal_parser.py": {
-      "hash": "fe7dc78635407387c8a7834ef454d2d9f311c2a029d7f362b65208b0c7a71988",
-      "size": 4348,
-      "mtime": 1794399340.2686098,
+      "hash": "fea5d08ab1a2fc91b496a58bf888b1d8b47de44e9f659054aeaf6e38c2a0b9ed",
+      "size": 4349,
+      "mtime": 1794399572.0427089,
       "language": "python"
     }
   }

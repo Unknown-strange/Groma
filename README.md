@@ -10,11 +10,12 @@
 2. [What Can Groma Be Used For?](#-what-can-groma-be-used-for)
 3. [Key Features](#-key-features)
 4. [Installation & Quick Start](#-installation--quick-start)
-5. [Command Reference](#-command-reference)
-6. [What Groma Generates in Your Project](#-what-groma-generates-in-your-project)
-7. [How the AI Agent Synchronization Loop Works](#-how-the-ai-agent-synchronization-loop-works)
-8. [Development & Running Tests](#-development--running-tests)
-9. [License](#-license)
+5. [How to Update / Upgrade](#-how-to-update--upgrade)
+6. [Command & MCP Reference](#-command--mcp-reference)
+7. [What Groma Generates in Your Project](#-what-groma-generates-in-your-project)
+8. [How the AI Agent Synchronization Loop Works](#-how-the-ai-agent-synchronization-loop-works)
+9. [Development & Running Tests](#-development--running-tests)
+10. [License](#-license)
 
 ---
 
@@ -170,12 +171,34 @@ py -m groma scan .
 
 ---
 
-## 🛠️ Command Reference
+## 🔄 How to Update / Upgrade
 
-Groma provides **3 core commands**:
+If you or your team already installed an older version of Groma, run the appropriate command to upgrade to the latest release:
+
+### For `pipx` users (Global install):
+```bash
+pipx install --force git+https://github.com/Unknown-strange/Groma.git
+```
+
+### For `pip` users (Virtual environment):
+```bash
+python3 -m pip install --upgrade --force-reinstall git+https://github.com/Unknown-strange/Groma.git
+```
+
+### For `npm` users:
+```bash
+npm install -g git+https://github.com/Unknown-strange/Groma.git
+```
+*(Note: If using `npx`, it automatically uses the latest version on each invocation).*
+
+---
+
+## 🛠️ Command & MCP Reference
+
+Groma provides **5 core commands** and a built-in **Model Context Protocol (MCP)** server:
 
 ### 1. `groma scan [PATH]` — Initial Baseline & Full Build
-Walks the target repository (defaults to current directory `.`), computes SHA-256 hashes, parses all source files into the unified `FileAnalysis` schema, builds the NetworkX dependency graph, and writes all `.groma/` docs, `SKILL.md`, and IDE agent rules.
+Walks the target repository (defaults to current directory `.`), computes SHA-256 hashes, parses all source files into the unified `FileAnalysis` schema, builds the NetworkX dependency graph, and writes all `.groma/` docs, `SKILL.md`, `.cursor/mcp.json`, and IDE agent rules.
 
 ```bash
 # Scan the current repository
@@ -185,29 +208,25 @@ groma scan
 groma scan /path/to/another-project
 ```
 
-**Example Output:**
-```text
-             Groma Baseline Scan Summary              
-┏━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃ Property            ┃ Value                        ┃
-┡━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
-│ Project Name        │ Groma                        │
-│ Tracked Files       │ 21                           │
-│ Frameworks          │ Pydantic, Pytest, Typer      │
-│ Core Hubs           │ 11                           │
-│ Summary Fingerprint │ 08f32b8190803047...          │
-│ Generated Docs      │ 6 files (.groma/ & .agents/) │
-└─────────────────────┴──────────────────────────────┘
-╭──────────────────────────────────────────────────────────────────────────────╮
-│ ✓ Baseline scan complete!                                                    │
-│ Run groma check anytime to verify freshness, or groma update after making    │
-│ code changes.                                                                │
-╰──────────────────────────────────────────────────────────────────────────────╯
+---
+
+### 2. `groma find <query> [PATH]` — Sub-10ms Symbol & Route Search
+Instant search across all indexed files, classes, methods, functions, database seeders, migrations, and HTTP routes in the repository.
+
+```bash
+# Find a database seeder or migration
+groma find UsersTableSeeder
+
+# Find an API route
+groma find /api/v1/portfolios
+
+# Find a class or function
+groma find AuthService
 ```
 
 ---
 
-### 2. `groma check [PATH]` — Read-Only Staleness & Impact Detection
+### 3. `groma check [PATH]` — Read-Only Staleness & Impact Detection
 Compares the current files on disk against `.groma/manifest.json` **without modifying any files**.
 - Reuses cached hashes when file `size` and `mtime` are unchanged (~0.1s execution).
 - **Exit Code `0`**: Working tree matches the baseline fingerprint (`UP TO DATE`).
@@ -221,41 +240,9 @@ groma check
 groma check /path/to/another-project
 ```
 
-**Example Output (When Clean):**
-```text
-╭──────────────────────────────────────────────────────────────────────────────╮
-│ ✓ UP TO DATE                                                                 │
-│ Project: Groma                                                               │
-│ Fingerprint:                                                                 │
-│ 08f32b819080304759a20dbf7306e20778c32334d0091761aba020ded3ed8e27             │
-│ Files: 21 source files verified                                              │
-╰──────────────────────────────────────────────────────────────────────────────╯
-```
-
-**Example Output (When Stale):**
-```text
-╭──────────────────────────────────────────────────────────────────────────────╮
-│ ⚠️ STALE: Working tree has changed since last Groma sync!                    │
-│ Baseline Fingerprint: 6abd4e8cbd9c5f29...                                    │
-│ Current Fingerprint:  08f32b8190803047...                                    │
-│                                                                              │
-│ Modified (1):                                                                │
-│   • groma/schema.py                                                          │
-│                                                                              │
-│ Impact Radius (10 dependent files affected):                                 │
-│   ↳ groma/cli.py                                                             │
-│   ↳ groma/graph.py                                                           │
-│   ↳ groma/manifest.py                                                        │
-│   ↳ groma/parsers/python_ast.py                                              │
-│   ...                                                                        │
-│                                                                              │
-│ Please run groma update to re-synchronize.                                   │
-╰──────────────────────────────────────────────────────────────────────────────╯
-```
-
 ---
 
-### 3. `groma update [PATH]` — Fast Incremental Rebuild
+### 4. `groma update [PATH]` — Fast Incremental Rebuild
 Instead of re-parsing the entire repository, `groma update` diffs the working tree against `.groma/manifest.json`, loads cached ASTs from `.groma/file-index.json`, and **re-parses only the Added/Modified files**. It then rebuilds the dependency graph, updates `.groma/*.md` and `SKILL.md`, and writes the new fingerprint.
 
 ```bash
@@ -266,23 +253,25 @@ groma update
 groma update /path/to/another-project
 ```
 
-**Example Output:**
-```text
-╭──────────────────────────────────────────────────────────────────────────────╮
-│ ✓ SYNCHRONIZED                                                               │
-│ Project: Groma                                                               │
-│ Re-parsed: 1 changed files                                                   │
-│ Deleted: 0 files                                                             │
-│ New Fingerprint:                                                             │
-│ 08f32b819080304759a20dbf7306e20778c32334d0091761aba020ded3ed8e27             │
-╰──────────────────────────────────────────────────────────────────────────────╯
+---
+
+### 5. `groma mcp [PATH]` — Model Context Protocol Server
+Runs Groma as an active MCP JSON-RPC 2.0 server over `stdio`. Cursor, Antigravity, and Claude Code connect automatically via `.cursor/mcp.json` to query:
+- `groma_overview`: Project summary, language breakdown, and Core Hubs.
+- `groma_find_symbol`: Instant search for classes, methods, seeders, routes.
+- `groma_file_details`: Complete classes, methods, imports, and dependents for a file.
+- `groma_impact_radius`: Reverse blast radius calculation for refactoring.
+- `groma_sync_status`: Working tree freshness verification and auto-update.
+
+```bash
+groma mcp .
 ```
 
 ---
 
-### 4. `groma --version` / `groma --help`
+### 6. `groma --version` / `groma --help`
 ```bash
-groma --version   # Display installed Groma version
+groma --version   # Display installed Groma version (e.g. 0.2.0)
 groma --help      # Show all available commands and options
 ```
 

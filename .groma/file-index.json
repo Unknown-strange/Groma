@@ -1,6 +1,6 @@
 {
   "project_name": "Groma",
-  "updated_at": "2026-11-11T12:18:07.848125+00:00",
+  "updated_at": "2026-11-11T14:41:32.983700+00:00",
   "files": {
     "bin/groma.js": {
       "path": "bin/groma.js",
@@ -977,8 +977,8 @@
     "groma/mcp_server.py": {
       "path": "groma/mcp_server.py",
       "language": "python",
-      "size": 15136,
-      "lines_of_code": 403,
+      "size": 15137,
+      "lines_of_code": 404,
       "module_docstring": "Built-in Model Context Protocol (MCP) JSON-RPC 2.0 server and fast symbol search engine.",
       "imports": [
         "__future__",
@@ -1514,8 +1514,8 @@
     "groma/parsers/universal.py": {
       "path": "groma/parsers/universal.py",
       "language": "python",
-      "size": 9660,
-      "lines_of_code": 268,
+      "size": 9661,
+      "lines_of_code": 269,
       "module_docstring": "Universal multi-language structural parser for PHP, JS/TS/Vue, Go, Rust, Java, SQL, etc.",
       "imports": [
         "__future__",
@@ -2332,8 +2332,8 @@
     "tests/test_mcp.py": {
       "path": "tests/test_mcp.py",
       "language": "python",
-      "size": 3565,
-      "lines_of_code": 111,
+      "size": 3566,
+      "lines_of_code": 112,
       "module_docstring": "Unit and integration tests for Groma's MCP server and `groma find` CLI command.",
       "imports": [
         "groma.cli",
@@ -2653,8 +2653,8 @@
     "tests/test_universal_parser.py": {
       "path": "tests/test_universal_parser.py",
       "language": "python",
-      "size": 4348,
-      "lines_of_code": 138,
+      "size": 4349,
+      "lines_of_code": 139,
       "module_docstring": "Unit tests for Groma's universal multi-language parser and cross-language dependency graph.",
       "imports": [
         "groma.graph",

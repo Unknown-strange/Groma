@@ -16,8 +16,9 @@
 
 **Imports (Outgoing Dependencies):** None (isolated from internal imports)
 
-**Imported By (1 Dependents):**
+**Imported By (2 Dependents):**
 - `groma/cli.py`
+- `groma/mcp_server.py`
 
 ---
 
@@ -37,12 +38,14 @@
 - `groma/generators/__init__.py`
 - `groma/graph.py`
 - `groma/manifest.py`
+- `groma/mcp_server.py`
 - `groma/parsers/__init__.py`
 - `groma/scanner.py`
 
-**Imported By (2 Dependents):**
+**Imported By (3 Dependents):**
 - `groma/__main__.py`
 - `tests/test_cli.py`
+- `tests/test_mcp.py`
 
 ---
 
@@ -55,8 +58,9 @@
 - `groma/graph.py`
 - `groma/schema.py`
 
-**Imported By (2 Dependents):**
+**Imported By (3 Dependents):**
 - `groma/cli.py`
+- `groma/mcp_server.py`
 - `tests/test_generators.py`
 
 ---
@@ -98,12 +102,14 @@
 **Imports (Outgoing Dependencies):**
 - `groma/schema.py`
 
-**Imported By (5 Dependents):**
+**Imported By (7 Dependents):**
 - `groma/cli.py`
 - `groma/generators/__init__.py`
 - `groma/generators/markdown.py`
+- `groma/mcp_server.py`
 - `tests/test_generators.py`
 - `tests/test_graph.py`
+- `tests/test_universal_parser.py`
 
 ---
 
@@ -112,9 +118,27 @@
 **Imports (Outgoing Dependencies):**
 - `groma/schema.py`
 
+**Imported By (3 Dependents):**
+- `groma/cli.py`
+- `groma/mcp_server.py`
+- `tests/test_manifest.py`
+
+---
+
+### `groma/mcp_server.py`
+
+**Imports (Outgoing Dependencies):**
+- `groma/__init__.py`
+- `groma/generators/__init__.py`
+- `groma/graph.py`
+- `groma/manifest.py`
+- `groma/parsers/__init__.py`
+- `groma/scanner.py`
+- `groma/schema.py`
+
 **Imported By (2 Dependents):**
 - `groma/cli.py`
-- `tests/test_manifest.py`
+- `tests/test_mcp.py`
 
 ---
 
@@ -122,11 +146,14 @@
 
 **Imports (Outgoing Dependencies):**
 - `groma/parsers/python_ast.py`
+- `groma/parsers/universal.py`
 - `groma/schema.py`
 
-**Imported By (2 Dependents):**
+**Imported By (4 Dependents):**
 - `groma/cli.py`
+- `groma/mcp_server.py`
 - `tests/test_python_ast.py`
+- `tests/test_universal_parser.py`
 
 ---
 
@@ -141,14 +168,26 @@
 
 ---
 
+### `groma/parsers/universal.py`
+
+**Imports (Outgoing Dependencies):**
+- `groma/schema.py`
+
+**Imported By (1 Dependents):**
+- `groma/parsers/__init__.py`
+
+---
+
 ### `groma/scanner.py`
 
 **Imports (Outgoing Dependencies):** None (isolated from internal imports)
 
-**Imported By (3 Dependents):**
+**Imported By (5 Dependents):**
 - `groma/cli.py`
+- `groma/mcp_server.py`
 - `tests/test_manifest.py`
 - `tests/test_scanner.py`
+- `tests/test_universal_parser.py`
 
 ---
 
@@ -156,14 +195,16 @@
 
 **Imports (Outgoing Dependencies):** None (isolated from internal imports)
 
-**Imported By (10 Dependents):**
+**Imported By (12 Dependents):**
 - `groma/generators/__init__.py`
 - `groma/generators/markdown.py`
 - `groma/generators/skill.py`
 - `groma/graph.py`
 - `groma/manifest.py`
+- `groma/mcp_server.py`
 - `groma/parsers/__init__.py`
 - `groma/parsers/python_ast.py`
+- `groma/parsers/universal.py`
 - `tests/test_generators.py`
 - `tests/test_graph.py`
 - `tests/test_schema.py`
@@ -212,6 +253,16 @@
 
 ---
 
+### `tests/test_mcp.py`
+
+**Imports (Outgoing Dependencies):**
+- `groma/cli.py`
+- `groma/mcp_server.py`
+
+**Imported By:** None (Leaf node or top-level entrypoint)
+
+---
+
 ### `tests/test_python_ast.py`
 
 **Imports (Outgoing Dependencies):**
@@ -235,6 +286,17 @@
 
 **Imports (Outgoing Dependencies):**
 - `groma/schema.py`
+
+**Imported By:** None (Leaf node or top-level entrypoint)
+
+---
+
+### `tests/test_universal_parser.py`
+
+**Imports (Outgoing Dependencies):**
+- `groma/graph.py`
+- `groma/parsers/__init__.py`
+- `groma/scanner.py`
 
 **Imported By:** None (Leaf node or top-level entrypoint)
 

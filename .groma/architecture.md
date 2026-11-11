@@ -5,11 +5,11 @@
 ## 1. Project Overview
 
 - **Project Name**: `Groma`
-- **Generated At (UTC)**: `2026-11-10T16:25:23.612994+00:00`
-- **Summary Fingerprint**: `a3e5d699466efb6c6903d4f21f06e50a77833ca8dabbd928c81c16c81d25c7a1`
-- **Tracked Source Files**: 21
-- **Total Lines of Code**: 2,871
-- **Detected Frameworks & Libraries**: `Pydantic`, `Pytest`, `Typer`
+- **Generated At (UTC)**: `2026-11-11T12:18:07.772776+00:00`
+- **Summary Fingerprint**: `28fe69800697a4616a365702849aa4408bcca7ccf3ec0a49b31ee334f26c4eb4`
+- **Tracked Source Files**: 25
+- **Total Lines of Code**: 3,859
+- **Indexed Languages**: `javascript`, `python`
 
 ---
 
@@ -19,18 +19,20 @@ These files have the highest Fan-In (in-degree), meaning they are imported most 
 
 | Rank | File Path | In-Degree (Dependents) | Summary / Responsibility |
 | :--- | :--- | :--- | :--- |
-| 1 | `groma/schema.py` | **10** | Unified data contract (Pydantic v2 models) for Groma. |
-| 2 | `groma/graph.py` | **5** | Dependency graph, import resolution, core hub detection, and impact radius analysis. |
-| 3 | `groma/scanner.py` | **3** | Repository scanner, .gitignore filter, dependency-file filter, and framework detector. |
-| 4 | `groma/cli.py` | **2** | Typer + Rich CLI Orchestrator for Groma: scan, check, and update. |
-| 5 | `groma/generators/__init__.py` | **2** | Markdown, SKILL.md, and rule document generators for Groma. |
-| 6 | `groma/generators/markdown.py` | **2** | Markdown generators for architecture.md, file-map.md, and dependencies.md. |
-| 7 | `groma/generators/skill.py` | **2** | Skill generator for .agents/skills/<project>/SKILL.md. |
-| 8 | `groma/manifest.py` | **2** | SHA-256 snapshot, fast size/mtime cache check, project fingerprinting, and diff engine. |
-| 9 | `groma/parsers/__init__.py` | **2** | Language parsers dispatcher, FileIndex cache, and file-index.json persistence. |
-| 10 | `groma/parsers/python_ast.py` | **2** | Built-in Python AST parser extracting classes, functions, calls, imports, and HTTP routes. |
-| 11 | `groma/__init__.py` | **1** | Groma — Deterministic codebase knowledge & skill generator for IDE AI agents. |
-| 12 | `groma/generators/rules.py` | **1** | Agent rule generator for IDE AI agents (Cursor, Antigravity, Claude Code). |
+| 1 | `groma/schema.py` | **12** | Unified data contract (Pydantic v2 models) for Groma. |
+| 2 | `groma/graph.py` | **7** | Dependency graph, cross-language import resolution, core hub detection, and impact radius. |
+| 3 | `groma/scanner.py` | **5** | Repository scanner, .gitignore filter, and dependency-file filter for all languages. |
+| 4 | `groma/parsers/__init__.py` | **4** | Language parsers dispatcher, FileIndex cache, and file-index.json persistence. |
+| 5 | `groma/cli.py` | **3** | Typer + Rich CLI Orchestrator for Groma: scan, check, update, find, and mcp. |
+| 6 | `groma/generators/__init__.py` | **3** | Markdown, SKILL.md, and rule document generators for Groma. |
+| 7 | `groma/manifest.py` | **3** | SHA-256 snapshot, fast size/mtime cache check, project fingerprinting, and diff engine. |
+| 8 | `groma/__init__.py` | **2** | Groma — Deterministic codebase knowledge & skill generator for IDE AI agents. |
+| 9 | `groma/generators/markdown.py` | **2** | Markdown generators for architecture.md, file-map.md, and dependencies.md. |
+| 10 | `groma/generators/skill.py` | **2** | Skill generator for .agents/skills/<project>/SKILL.md. |
+| 11 | `groma/mcp_server.py` | **2** | Built-in Model Context Protocol (MCP) JSON-RPC 2.0 server and fast symbol search engine. |
+| 12 | `groma/parsers/python_ast.py` | **2** | Built-in Python AST parser extracting classes, functions, calls, imports, and HTTP routes. |
+| 13 | `groma/generators/rules.py` | **1** | Agent rule and MCP configuration generator for IDE AI agents (Cursor, Antigravity, Claude Code). |
+| 14 | `groma/parsers/universal.py` | **1** | Universal multi-language structural parser for PHP, JS/TS/Vue, Go, Rust, Java, SQL, etc. |
 
 ---
 

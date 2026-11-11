@@ -30,11 +30,11 @@ def generate_architecture_doc(
     total_loc = sum(f.lines_of_code for f in file_index.files.values())
     lines.append(f"- **Total Lines of Code**: {total_loc:,}")
 
-    if manifest.frameworks:
-        framework_badges = ", ".join(f"`{fw}`" for fw in manifest.frameworks)
-        lines.append(f"- **Detected Frameworks & Libraries**: {framework_badges}")
+    if manifest.languages:
+        lang_badges = ", ".join(f"`{lang}`" for lang in manifest.languages)
+        lines.append(f"- **Indexed Languages**: {lang_badges}")
     else:
-        lines.append("- **Detected Frameworks & Libraries**: None detected")
+        lines.append("- **Indexed Languages**: None detected")
 
     lines.extend(["", "---", "", "## 2. Core Modules & Hubs (Highest Centrality)", ""])
 

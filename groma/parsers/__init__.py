@@ -5,6 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from groma.parsers.python_ast import parse_python_file
+from groma.parsers.universal import parse_universal_file
 from groma.schema import FileAnalysis, FileIndex
 
 FILE_INDEX_REL_PATH = Path(".groma") / "file-index.json"
@@ -14,24 +15,7 @@ def parse_source_file(repo_root: Path, rel_posix_path: str, language: str) -> Fi
     """Dispatch a source file to the appropriate parser based on its language."""
     if language == "python":
         return parse_python_file(repo_root, rel_posix_path)
-
-    # Fallback structural stub for JS/TS until Phase 2 Tree-sitter parser is attached
-    abs_path = (repo_root / rel_posix_path).resolve()
-    size = 0
-    lines_of_code = 0
-    try:
-        raw = abs_path.read_bytes()
-        size = len(raw)
-        lines_of_code = len(raw.decode("utf-8", errors="replace").splitlines())
-    except OSError:
-        pass
-
-    return FileAnalysis(
-        path=rel_posix_path,
-        language=language,
-        size=size,
-        lines_of_code=lines_of_code,
-    )
+    return parse_universal_file(repo_root, rel_posix_path, language)
 
 
 def build_file_index(

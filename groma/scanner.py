@@ -1,10 +1,8 @@
-"""Repository scanner, .gitignore filter, dependency-file filter, and framework detector."""
+"""Repository scanner, .gitignore filter, and dependency-file filter for all languages."""
 
 from __future__ import annotations
 
-import json
 import os
-import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -12,12 +10,14 @@ import pathspec
 
 # Hard-coded directories, caches, dependency folders, and dependency files to ignore
 DEFAULT_IGNORE_PATTERNS: tuple[str, ...] = (
-    # Version control & Groma state
+    # Version control & Groma / IDE state
     ".git/",
     ".hg/",
     ".svn/",
     ".groma/",
     ".agents/",
+    ".gemini/",
+    ".cursor/",
     # Dependency & Virtual Environment directories across ecosystems
     ".venv/",
     "venv/",
@@ -101,7 +101,7 @@ DEFAULT_IGNORE_PATTERNS: tuple[str, ...] = (
     "pubspec.lock",
     "mix.exs",
     "mix.lock",
-    # Compiled / binary artifacts
+    # Compiled / binary / minified artifacts
     "*.pyc",
     "*.pyo",
     "*.pyd",
@@ -109,6 +109,8 @@ DEFAULT_IGNORE_PATTERNS: tuple[str, ...] = (
     "*.dylib",
     "*.dll",
     "*.class",
+    "*.min.js",
+    "*.min.css",
 )
 
 # Explicit set of dependency filenames for fast exact lookup
@@ -158,54 +160,51 @@ DEPENDENCY_FILENAMES: frozenset[str] = frozenset(
     }
 )
 
-# Supported source code extensions mapped to their canonical language identifier
+# Universal source code, backend, frontend, database, and config extensions
 EXTENSION_LANGUAGE_MAP: dict[str, str] = {
+    # Python
     ".py": "python",
+    # JavaScript & TypeScript & Frontend Frameworks
     ".js": "javascript",
     ".mjs": "javascript",
     ".cjs": "javascript",
     ".jsx": "javascript",
     ".ts": "typescript",
     ".tsx": "typescript",
-}
-
-# Known framework signatures (dependency token -> canonical display name)
-PYTHON_FRAMEWORK_SIGNATURES: dict[str, str] = {
-    "fastapi": "FastAPI",
-    "django": "Django",
-    "flask": "Flask",
-    "starlette": "Starlette",
-    "litestar": "Litestar",
-    "tornado": "Tornado",
-    "sanic": "Sanic",
-    "aiohttp": "aiohttp",
-    "typer": "Typer",
-    "click": "Click",
-    "pydantic": "Pydantic",
-    "sqlalchemy": "SQLAlchemy",
-    "celery": "Celery",
-    "pytest": "Pytest",
-}
-
-JS_FRAMEWORK_SIGNATURES: dict[str, str] = {
-    "next": "Next.js",
-    "react": "React",
-    "vue": "Vue.js",
-    "nuxt": "Nuxt",
-    "@angular/core": "Angular",
-    "svelte": "Svelte",
-    "express": "Express",
-    "fastify": "Fastify",
-    "@nestjs/core": "NestJS",
-    "hono": "Hono",
-    "koa": "Koa",
-}
-
-PHP_FRAMEWORK_SIGNATURES: dict[str, str] = {
-    "laravel/framework": "Laravel",
-    "symfony/symfony": "Symfony",
-    "symfony/framework-bundle": "Symfony",
-    "slim/slim": "Slim",
+    ".vue": "vue",
+    ".svelte": "svelte",
+    # PHP (Laravel, Symfony, WordPress, etc.)
+    ".php": "php",
+    # Go, Rust, C/C++
+    ".go": "go",
+    ".rs": "rust",
+    ".c": "c",
+    ".h": "c",
+    ".cpp": "cpp",
+    ".cc": "cpp",
+    ".cxx": "cpp",
+    ".hpp": "cpp",
+    # JVM & .NET
+    ".java": "java",
+    ".kt": "kotlin",
+    ".kts": "kotlin",
+    ".cs": "csharp",
+    # Ruby, Swift, Dart, Elixir
+    ".rb": "ruby",
+    ".swift": "swift",
+    ".dart": "dart",
+    ".ex": "elixir",
+    ".exs": "elixir",
+    # Database, API Schemas, & Infrastructure Configs
+    ".sql": "sql",
+    ".graphql": "graphql",
+    ".gql": "graphql",
+    ".proto": "protobuf",
+    ".yml": "yaml",
+    ".yaml": "yaml",
+    ".sh": "shell",
+    ".bash": "shell",
+    ".zsh": "shell",
 }
 
 
@@ -214,7 +213,7 @@ class ScanResult:
     """Output of scanning a target repository."""
 
     files: list[tuple[str, str]] = field(default_factory=list)
-    frameworks: list[str] = field(default_factory=list)
+    languages: list[str] = field(default_factory=list)
 
 
 def is_dependency_file(rel_posix_path: str) -> bool:
@@ -270,74 +269,11 @@ def _load_nested_gitignore_patterns(
     return scoped_patterns
 
 
-def detect_frameworks(repo_root: Path) -> list[str]:
-    """Passively inspect project manifests to detect frameworks without tracking those files."""
-    detected: set[str] = set()
-
-    # 1. Inspect pyproject.toml
-    pyproject_path = repo_root / "pyproject.toml"
-    if pyproject_path.is_file():
-        try:
-            content = pyproject_path.read_text(encoding="utf-8", errors="ignore").lower()
-            for token, display_name in PYTHON_FRAMEWORK_SIGNATURES.items():
-                if re.search(rf"\b{re.escape(token)}\b", content):
-                    detected.add(display_name)
-        except OSError:
-            pass
-
-    # 2. Inspect requirements*.txt
-    for req_file in repo_root.glob("requirements*.txt"):
-        if req_file.is_file():
-            try:
-                content = req_file.read_text(encoding="utf-8", errors="ignore").lower()
-                for token, display_name in PYTHON_FRAMEWORK_SIGNATURES.items():
-                    if re.search(rf"^\s*{re.escape(token)}\b", content, flags=re.MULTILINE):
-                        detected.add(display_name)
-            except OSError:
-                pass
-
-    # 3. Inspect package.json
-    package_json_path = repo_root / "package.json"
-    if package_json_path.is_file():
-        try:
-            data = json.loads(package_json_path.read_text(encoding="utf-8", errors="ignore"))
-            deps: dict[str, str] = {}
-            if isinstance(data, dict):
-                for section in ("dependencies", "devDependencies", "peerDependencies"):
-                    sec_data = data.get(section)
-                    if isinstance(sec_data, dict):
-                        deps.update(sec_data)
-            for pkg_name, display_name in JS_FRAMEWORK_SIGNATURES.items():
-                if pkg_name in deps:
-                    detected.add(display_name)
-        except (OSError, json.JSONDecodeError):
-            pass
-
-    # 4. Inspect composer.json
-    composer_json_path = repo_root / "composer.json"
-    if composer_json_path.is_file():
-        try:
-            data = json.loads(composer_json_path.read_text(encoding="utf-8", errors="ignore"))
-            deps = {}
-            if isinstance(data, dict):
-                for section in ("require", "require-dev"):
-                    sec_data = data.get(section)
-                    if isinstance(sec_data, dict):
-                        deps.update(sec_data)
-            for pkg_name, display_name in PHP_FRAMEWORK_SIGNATURES.items():
-                if pkg_name in deps:
-                    detected.add(display_name)
-        except (OSError, json.JSONDecodeError):
-            pass
-
-    return sorted(detected)
-
-
 def scan_repository(repo_root: Path) -> ScanResult:
     """Walk the repository, ignoring all .gitignore matches and dependency files.
 
-    Returns only supported source code files as sorted (rel_posix_path, language) tuples,
-    plus a sorted list of detected frameworks.
+    Returns supported source files as sorted (rel_posix_path, language) tuples,
+    plus a sorted list of unique languages present in the codebase.
     """
     repo_root = repo_root.resolve()
     base_patterns: list[str] = list(DEFAULT_IGNORE_PATTERNS)
@@ -353,6 +289,7 @@ def scan_repository(repo_root: Path) -> ScanResult:
 
     ignore_spec = pathspec.PathSpec.from_lines("gitignore", base_patterns)
     tracked_files: list[tuple[str, str]] = []
+    languages_found: set[str] = set()
 
     for current_root, dirs, files in os.walk(repo_root, topdown=True):
         current_dir = Path(current_root)
@@ -385,14 +322,14 @@ def scan_repository(repo_root: Path) -> ScanResult:
             if is_dependency_file(rel_posix):
                 continue
 
-            # 3. Only track supported source code extensions
+            # 3. Only track supported source/config extensions
             ext = file_path.suffix.lower()
             language = EXTENSION_LANGUAGE_MAP.get(ext)
             if language is None:
                 continue
 
             tracked_files.append((rel_posix, language))
+            languages_found.add(language)
 
     tracked_files.sort(key=lambda item: item[0])
-    frameworks = detect_frameworks(repo_root)
-    return ScanResult(files=tracked_files, frameworks=frameworks)
+    return ScanResult(files=tracked_files, languages=sorted(languages_found))

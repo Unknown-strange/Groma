@@ -6,8 +6,9 @@
 
 - **Language**: `javascript` | **Lines**: 71 | **Size**: 1,900 bytes
 
-*(No top-level classes or functions declared)*
+### Top-Level Functions
 
+- `def findPython()` (lines 16–36)
 
 ---
 
@@ -33,20 +34,24 @@
 
 ## `groma/cli.py`
 
-- **Language**: `python` | **Lines**: 282 | **Size**: 9,565 bytes
-- **Module Docstring**: *Typer + Rich CLI Orchestrator for Groma: scan, check, and update.*
+- **Language**: `python` | **Lines**: 346 | **Size**: 11,635 bytes
+- **Module Docstring**: *Typer + Rich CLI Orchestrator for Groma: scan, check, update, find, and mcp.*
 
 ### Top-Level Functions
 
-- `def version_callback(value: bool) -> None` (lines 34–37)
-- `def main(version: bool = typer.Option(False, '--version', '-v', help='Show Groma version and exit.', callback=version_callback, is_eager=True)) -> None` (lines 41–51)
+- `def version_callback(value: bool) -> None` (lines 35–38)
+- `def main(version: bool = typer.Option(False, '--version', '-v', help='Show Groma version and exit.', callback=version_callback, is_eager=True)) -> None` (lines 42–52)
   - *Groma CLI root callback.*
-- `def scan_cmd(target_dir: Annotated[Path, typer.Argument(help='Path to repository root.', exists=True, file_okay=False, dir_okay=True, resolve_path=True)] = Path('.')) -> None` (lines 55–111)
+- `def scan_cmd(target_dir: Annotated[Path, typer.Argument(help='Path to repository root.', exists=True, file_okay=False, dir_okay=True, resolve_path=True)] = Path('.')) -> None` (lines 56–113)
   - *Perform a full baseline scan, parse symbols, build graph, and generate docs.*
-- `def check_cmd(target_dir: Annotated[Path, typer.Argument(help='Path to repository root.', exists=True, file_okay=False, dir_okay=True, resolve_path=True)] = Path('.')) -> None` (lines 115–211)
+- `def check_cmd(target_dir: Annotated[Path, typer.Argument(help='Path to repository root.', exists=True, file_okay=False, dir_okay=True, resolve_path=True)] = Path('.')) -> None` (lines 117–213)
   - *Read-only check of disk state vs manifest.json. Reports staleness and impact radius.*
-- `def update_cmd(target_dir: Annotated[Path, typer.Argument(help='Path to repository root.', exists=True, file_okay=False, dir_okay=True, resolve_path=True)] = Path('.')) -> None` (lines 215–282)
+- `def update_cmd(target_dir: Annotated[Path, typer.Argument(help='Path to repository root.', exists=True, file_okay=False, dir_okay=True, resolve_path=True)] = Path('.')) -> None` (lines 217–284)
   - *Fast incremental rebuild. Re-parses ONLY changed files and synchronizes docs.*
+- `def find_cmd(query: Annotated[str, typer.Argument(help='Symbol, class, function, route, or filename substring to search.')], target_dir: Annotated[Path, typer.Argument(help='Path to repository root.', exists=True, file_okay=False, dir_okay=True, resolve_path=True)] = Path('.')) -> None` (lines 288–329)
+  - *Fast sub-10ms search across all indexed files, classes, methods, functions, and routes.*
+- `def mcp_cmd(target_dir: Annotated[Path, typer.Argument(help='Path to repository root.', exists=True, file_okay=False, dir_okay=True, resolve_path=True)] = Path('.')) -> None` (lines 333–346)
+  - *Start the Groma Model Context Protocol (MCP) server over stdio.*
 
 ---
 
@@ -64,7 +69,7 @@
 
 ## `groma/generators/markdown.py`
 
-- **Language**: `python` | **Lines**: 219 | **Size**: 8,218 bytes
+- **Language**: `python` | **Lines**: 219 | **Size**: 8,182 bytes
 - **Module Docstring**: *Markdown generators for architecture.md, file-map.md, and dependencies.md.*
 
 ### Top-Level Functions
@@ -84,63 +89,65 @@
 
 ## `groma/generators/rules.py`
 
-- **Language**: `python` | **Lines**: 57 | **Size**: 2,420 bytes
-- **Module Docstring**: *Agent rule generator for IDE AI agents (Cursor, Antigravity, Claude Code).*
+- **Language**: `python` | **Lines**: 79 | **Size**: 3,526 bytes
+- **Module Docstring**: *Agent rule and MCP configuration generator for IDE AI agents (Cursor, Antigravity, Claude Code).*
 
 ### Top-Level Functions
 
-- `def render_agent_rules(repo_root: Path) -> list[Path]` (lines 28–56)
-  - *Write agent rule files to .agents/rules/groma-sync.md and .cursorrules.*
+- `def render_agent_rules(repo_root: Path) -> list[Path]` (lines 30–79)
+  - *Write agent rule files (.agents/rules/groma-sync.md, .cursorrules) and .cursor/mcp.json.*
 
 ---
 
 ## `groma/generators/skill.py`
 
-- **Language**: `python` | **Lines**: 95 | **Size**: 3,570 bytes
+- **Language**: `python` | **Lines**: 100 | **Size**: 4,094 bytes
 - **Module Docstring**: *Skill generator for .agents/skills/<project>/SKILL.md.*
 
 ### Top-Level Functions
 
-- `def generate_skill_doc(manifest: Manifest, project_name: str | None = None) -> str` (lines 12–79)
+- `def generate_skill_doc(manifest: Manifest, project_name: str | None = None) -> str` (lines 12–85)
   - *Generate the complete content for SKILL.md including YAML frontmatter and AI rules.*
-- `def render_skill_doc(repo_root: Path, manifest: Manifest, project_name: str | None = None) -> Path` (lines 82–94)
+- `def render_skill_doc(repo_root: Path, manifest: Manifest, project_name: str | None = None) -> Path` (lines 88–100)
   - *Write SKILL.md to .agents/skills/<project_name>/SKILL.md and return its path.*
 
 ---
 
 ## `groma/graph.py`
 
-- **Language**: `python` | **Lines**: 139 | **Size**: 5,222 bytes
-- **Module Docstring**: *Dependency graph, import resolution, core hub detection, and impact radius analysis.*
+- **Language**: `python` | **Lines**: 197 | **Size**: 7,548 bytes
+- **Module Docstring**: *Dependency graph, cross-language import resolution, core hub detection, and impact radius.*
 
 ### Classes
 
-- **`class DependencyGraph`** (lines 48–138)
+- **`class DependencyGraph`** (lines 116–197)
   - *Directed dependency graph representing internal codebase dependencies.*
-  - `def __init__(self, file_index: FileIndex) -> None` (lines 54–57)
-  - `def _build_graph(self) -> None` (lines 59–83)
+  - `def __init__(self, file_index: FileIndex) -> None` (lines 122–125)
+  - `def _build_graph(self) -> None` (lines 127–144)
     - *Construct the NetworkX DiGraph by resolving imports across all files in the index.*
-  - `def imports_of(self, file_path: str) -> list[str]` (lines 85–89)
+  - `def imports_of(self, file_path: str) -> list[str]` (lines 146–150)
     - *Return files directly imported by `file_path` (outgoing edges / successors).*
-  - `def imported_by(self, file_path: str) -> list[str]` (lines 91–95)
+  - `def imported_by(self, file_path: str) -> list[str]` (lines 152–156)
     - *Return files that directly import `file_path` (incoming edges / predecessors).*
-  - `def core_hubs(self, limit: int = 10) -> list[tuple[str, int]]` (lines 97–110)
+  - `def core_hubs(self, limit: int = 10) -> list[tuple[str, int]]` (lines 158–171)
     - *Return the most heavily imported files (highest in-degree / Fan-In).*
-  - `def impact_radius(self, changed_files: list[str]) -> list[str]` (lines 112–128)
+  - `def impact_radius(self, changed_files: list[str]) -> list[str]` (lines 173–187)
     - *Return all files that directly or transitively depend on any of `changed_files`.*
-  - `def to_dict(self) -> dict[str, dict[str, list[str]]]` (lines 130–138)
+  - `def to_dict(self) -> dict[str, dict[str, list[str]]]` (lines 189–197)
     - *Serialize the dependency structure into a JSON-friendly mapping.*
 
 ### Top-Level Functions
 
-- `def _build_module_lookup(files: list[str]) -> dict[str, str]` (lines 13–45)
-  - *Map candidate dotted module paths to relative POSIX file paths.*
+- `def _build_module_lookup(files: list[str]) -> dict[str, str]` (lines 13–68)
+  - *Map candidate module/namespace/path keys to relative POSIX file paths.*
+- `def _resolve_import_target(source_path: str, raw_import: str, module_lookup: dict[str, str]) -> str | None` (lines 71–113)
+  - *Resolve a single raw import string from `source_path` to a tracked repository file.*
 
 ---
 
 ## `groma/manifest.py`
 
-- **Language**: `python` | **Lines**: 161 | **Size**: 5,480 bytes
+- **Language**: `python` | **Lines**: 163 | **Size**: 5,549 bytes
 - **Module Docstring**: *SHA-256 snapshot, fast size/mtime cache check, project fingerprinting, and diff engine.*
 
 ### Top-Level Functions
@@ -149,31 +156,51 @@
   - *Stream a file in 64 KB chunks and return its SHA-256 hex digest.*
 - `def compute_project_fingerprint(files: dict[str, FileHashEntry]) -> str` (lines 25–31)
   - *Compute a single deterministic summary SHA-256 over all sorted path:hash pairs.*
-- `def build_manifest(repo_root: Path, scanned_files: list[tuple[str, str]], frameworks: list[str] | None = None, previous_manifest: Manifest | None = None, project_name: str | None = None) -> Manifest` (lines 34–85)
+- `def build_manifest(repo_root: Path, scanned_files: list[tuple[str, str]], languages: list[str] | None = None, previous_manifest: Manifest | None = None, project_name: str | None = None) -> Manifest` (lines 34–87)
   - *Build a fresh Manifest for the scanned files, reusing cached hashes when unchanged.*
-- `def diff_manifests(old_manifest: Manifest, new_manifest: Manifest) -> DiffResult` (lines 88–144)
+- `def diff_manifests(old_manifest: Manifest, new_manifest: Manifest) -> DiffResult` (lines 90–146)
   - *Compare an existing baseline Manifest against a current Manifest.*
-- `def save_manifest(repo_root: Path, manifest: Manifest) -> Path` (lines 147–152)
+- `def save_manifest(repo_root: Path, manifest: Manifest) -> Path` (lines 149–154)
   - *Write `.groma/manifest.json` to disk and return the saved file path.*
-- `def load_manifest(repo_root: Path) -> Manifest | None` (lines 155–161)
+- `def load_manifest(repo_root: Path) -> Manifest | None` (lines 157–163)
   - *Load `.groma/manifest.json` from disk, or return None if it does not exist.*
+
+---
+
+## `groma/mcp_server.py`
+
+- **Language**: `python` | **Lines**: 403 | **Size**: 15,136 bytes
+- **Module Docstring**: *Built-in Model Context Protocol (MCP) JSON-RPC 2.0 server and fast symbol search engine.*
+
+### Top-Level Functions
+
+- `def ensure_state_loaded(repo_root: Path) -> tuple[Manifest, FileIndex, DependencyGraph]` (lines 102–117)
+  - *Load Manifest and FileIndex from .groma/, or build them on the fly if missing.*
+- `def search_knowledge_base(file_index: FileIndex, query: str) -> list[dict[str, Any]]` (lines 120–194)
+  - *Search files, classes, methods, functions, and HTTP routes matching `query`.*
+- `def execute_mcp_tool(repo_root: Path, tool_name: str, arguments: dict[str, Any]) -> str` (lines 197–308)
+  - *Execute one of Groma's MCP tools and return formatted text output.*
+- `def handle_mcp_request(repo_root: Path, request: dict[str, Any]) -> dict[str, Any] | None` (lines 311–369)
+  - *Process a single JSON-RPC 2.0 request dictionary and return the response dictionary.*
+- `def run_mcp_stdio_server(repo_root: Path) -> None` (lines 372–403)
+  - *Run the MCP JSON-RPC 2.0 server over standard input/output.*
 
 ---
 
 ## `groma/parsers/__init__.py`
 
-- **Language**: `python` | **Lines**: 94 | **Size**: 3,164 bytes
+- **Language**: `python` | **Lines**: 78 | **Size**: 2,788 bytes
 - **Module Docstring**: *Language parsers dispatcher, FileIndex cache, and file-index.json persistence.*
 
 ### Top-Level Functions
 
-- `def parse_source_file(repo_root: Path, rel_posix_path: str, language: str) -> FileAnalysis` (lines 13–34)
+- `def parse_source_file(repo_root: Path, rel_posix_path: str, language: str) -> FileAnalysis` (lines 14–18)
   - *Dispatch a source file to the appropriate parser based on its language.*
-- `def build_file_index(repo_root: Path, scanned_files: list[tuple[str, str]], previous_index: FileIndex | None = None, changed_files: set[str] | None = None, project_name: str | None = None) -> FileIndex` (lines 37–74)
+- `def build_file_index(repo_root: Path, scanned_files: list[tuple[str, str]], previous_index: FileIndex | None = None, changed_files: set[str] | None = None, project_name: str | None = None) -> FileIndex` (lines 21–58)
   - *Build or update a FileIndex across all tracked files.*
-- `def save_file_index(repo_root: Path, file_index: FileIndex) -> Path` (lines 77–82)
+- `def save_file_index(repo_root: Path, file_index: FileIndex) -> Path` (lines 61–66)
   - *Save `.groma/file-index.json` to disk and return the path.*
-- `def load_file_index(repo_root: Path) -> FileIndex | None` (lines 85–94)
+- `def load_file_index(repo_root: Path) -> FileIndex | None` (lines 69–78)
   - *Load `.groma/file-index.json` from disk, or return None if missing/invalid.*
 
 ---
@@ -210,34 +237,52 @@
 
 ---
 
+## `groma/parsers/universal.py`
+
+- **Language**: `python` | **Lines**: 268 | **Size**: 9,660 bytes
+- **Module Docstring**: *Universal multi-language structural parser for PHP, JS/TS/Vue, Go, Rust, Java, SQL, etc.*
+
+### Top-Level Functions
+
+- `def _split_params(raw_params: str) -> list[str]` (lines 59–64)
+  - *Split a raw comma-separated parameter string into clean parameter items.*
+- `def _estimate_block_end(lines: list[str], start_idx: int) -> int` (lines 67–80)
+  - *Estimate the closing line (1-based) of a brace-delimited block starting at start_idx.*
+- `def _extract_imports(content: str, language: str) -> list[str]` (lines 83–99)
+  - *Extract imported modules, namespaces, or relative file paths.*
+- `def _extract_routes(lines: list[str], language: str) -> list[RouteInfo]` (lines 102–135)
+  - *Extract HTTP route declarations from PHP (Laravel) or JS/TS (Express/Fastify).*
+- `def parse_universal_file(repo_root: Path, rel_posix_path: str, language: str) -> FileAnalysis` (lines 138–268)
+  - *Parse any supported non-Python source file into the unified FileAnalysis schema.*
+
+---
+
 ## `groma/scanner.py`
 
-- **Language**: `python` | **Lines**: 398 | **Size**: 11,978 bytes
-- **Module Docstring**: *Repository scanner, .gitignore filter, dependency-file filter, and framework detector.*
+- **Language**: `python` | **Lines**: 335 | **Size**: 9,298 bytes
+- **Module Docstring**: *Repository scanner, .gitignore filter, and dependency-file filter for all languages.*
 
 ### Classes
 
-- **`class ScanResult`** (lines 213–217)
+- **`class ScanResult`** (lines 212–216)
   - *Output of scanning a target repository.*
 
 ### Top-Level Functions
 
-- `def is_dependency_file(rel_posix_path: str) -> bool` (lines 220–227)
+- `def is_dependency_file(rel_posix_path: str) -> bool` (lines 219–226)
   - *Return True if the file is a dependency manifest or lockfile.*
-- `def load_ignore_spec(repo_root: Path) -> pathspec.PathSpec` (lines 230–242)
+- `def load_ignore_spec(repo_root: Path) -> pathspec.PathSpec` (lines 229–241)
   - *Combine default ignore patterns with all `.gitignore` files in the repository.*
-- `def _load_nested_gitignore_patterns(repo_root: Path, dir_path: Path) -> list[str]` (lines 245–270)
+- `def _load_nested_gitignore_patterns(repo_root: Path, dir_path: Path) -> list[str]` (lines 244–269)
   - *Load patterns from a nested `.gitignore` scoped to its relative directory.*
-- `def detect_frameworks(repo_root: Path) -> list[str]` (lines 273–333)
-  - *Passively inspect project manifests to detect frameworks without tracking those files.*
-- `def scan_repository(repo_root: Path) -> ScanResult` (lines 336–398)
+- `def scan_repository(repo_root: Path) -> ScanResult` (lines 272–335)
   - *Walk the repository, ignoring all .gitignore matches and dependency files.*
 
 ---
 
 ## `groma/schema.py`
 
-- **Language**: `python` | **Lines**: 174 | **Size**: 7,146 bytes
+- **Language**: `python` | **Lines**: 174 | **Size**: 7,165 bytes
 - **Module Docstring**: *Unified data contract (Pydantic v2 models) for Groma.*
 
 ### Classes
@@ -290,7 +335,7 @@
 
 ## `tests/test_generators.py`
 
-- **Language**: `python` | **Lines**: 167 | **Size**: 5,224 bytes
+- **Language**: `python` | **Lines**: 168 | **Size**: 5,291 bytes
 - **Module Docstring**: *Unit tests for Groma's markdown and SKILL.md document generators.*
 
 ### Top-Level Functions
@@ -298,15 +343,15 @@
 - `def _sample_fixtures() -> tuple[Manifest, FileIndex, DependencyGraph]` (lines 24–102)
   - *Create sample Manifest, FileIndex, and DependencyGraph for generator testing.*
 - `def test_generate_architecture_doc() -> None` (lines 105–114)
-  - *Verify architecture.md includes overview, hubs, and route table.*
+  - *Verify architecture.md includes overview, languages, hubs, and route table.*
 - `def test_generate_file_map_doc() -> None` (lines 117–126)
   - *Verify file-map.md documents classes, functions, and lines.*
 - `def test_generate_dependencies_doc() -> None` (lines 129–137)
   - *Verify dependencies.md documents internal imports and imported_by.*
 - `def test_generate_skill_doc() -> None` (lines 140–149)
   - *Verify SKILL.md YAML frontmatter and rules.*
-- `def test_generate_all_docs_on_disk(tmp_path: Path) -> None` (lines 152–166)
-  - *Verify render_all_docs creates markdown, skill, and rule files on disk.*
+- `def test_generate_all_docs_on_disk(tmp_path: Path) -> None` (lines 152–167)
+  - *Verify render_all_docs creates markdown, skill, rule, and MCP config files on disk.*
 
 ---
 
@@ -326,7 +371,7 @@
 
 ## `tests/test_manifest.py`
 
-- **Language**: `python` | **Lines**: 91 | **Size**: 3,467 bytes
+- **Language**: `python` | **Lines**: 91 | **Size**: 3,461 bytes
 - **Module Docstring**: *Unit tests for Groma's SHA-256 manifest builder, fast cache check, and diff engine.*
 
 ### Top-Level Functions
@@ -337,6 +382,20 @@
   - *Verify diff_manifests accurately classifies all 5 change categories including renames.*
 - `def test_save_and_load_manifest_persistence(tmp_path: Path) -> None` (lines 74–90)
   - *Verify .groma/manifest.json saves and loads cleanly.*
+
+---
+
+## `tests/test_mcp.py`
+
+- **Language**: `python` | **Lines**: 111 | **Size**: 3,565 bytes
+- **Module Docstring**: *Unit and integration tests for Groma's MCP server and `groma find` CLI command.*
+
+### Top-Level Functions
+
+- `def test_mcp_initialize_tools_list_and_calls(tmp_path: Path) -> None` (lines 13–95)
+  - *Verify MCP JSON-RPC initialize, tools/list, and tools/call across a full-stack repo.*
+- `def test_cli_find_command(tmp_path: Path) -> None` (lines 98–111)
+  - *Verify `groma find <query>` locates symbols from the CLI.*
 
 ---
 
@@ -360,23 +419,23 @@
 
 ## `tests/test_scanner.py`
 
-- **Language**: `python` | **Lines**: 111 | **Size**: 4,807 bytes
-- **Module Docstring**: *Unit tests for Groma's repository scanner, .gitignore filter, and dependency exclusions.*
+- **Language**: `python` | **Lines**: 106 | **Size**: 5,082 bytes
+- **Module Docstring**: *Unit tests for Groma's universal repository scanner, .gitignore filter, and dependency exclusions.*
 
 ### Top-Level Functions
 
-- `def test_ignores_all_gitignore_files_and_directories(tmp_path: Path) -> None` (lines 9–36)
+- `def test_ignores_all_gitignore_files_and_directories(tmp_path: Path) -> None` (lines 8–36)
   - *Verify every file and folder matched by .gitignore is ignored.*
 - `def test_ignores_dependency_files_and_folders_across_projects(tmp_path: Path) -> None` (lines 39–89)
   - *Verify dependency manifests, lockfiles, and vendor/venv dirs are never tracked.*
-- `def test_detect_frameworks_across_ecosystems(tmp_path: Path) -> None` (lines 92–110)
-  - *Verify passive framework detection from project files.*
+- `def test_full_stack_multi_language_indexing(tmp_path: Path) -> None` (lines 92–106)
+  - *Verify PHP, Vue, TypeScript, SQL, YAML, Go, and Rust files are all indexed.*
 
 ---
 
 ## `tests/test_schema.py`
 
-- **Language**: `python` | **Lines**: 130 | **Size**: 4,024 bytes
+- **Language**: `python` | **Lines**: 130 | **Size**: 4,030 bytes
 - **Module Docstring**: *Unit tests for Groma's unified Pydantic data contract (groma/schema.py).*
 
 ### Top-Level Functions
@@ -387,5 +446,19 @@
   - *Verify DiffResult.is_clean and DiffResult.changed_files properties.*
 - `def test_file_analysis_and_file_index_round_trip() -> None` (lines 58–129)
   - *Verify FileAnalysis, ClassInfo, FunctionInfo, RouteInfo, and FileIndex round-trip.*
+
+---
+
+## `tests/test_universal_parser.py`
+
+- **Language**: `python` | **Lines**: 138 | **Size**: 4,348 bytes
+- **Module Docstring**: *Unit tests for Groma's universal multi-language parser and cross-language dependency graph.*
+
+### Top-Level Functions
+
+- `def test_php_laravel_seeder_model_route_and_graph(tmp_path: Path) -> None` (lines 10–93)
+  - *Verify PHP classes, methods, Laravel routes, and PSR-4 namespace imports are indexed.*
+- `def test_typescript_vue_and_sql_indexing(tmp_path: Path) -> None` (lines 96–138)
+  - *Verify TypeScript arrow functions, Vue imports, and SQL CREATE TABLE extraction.*
 
 ---

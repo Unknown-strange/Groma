@@ -19,7 +19,7 @@ def test_build_manifest_and_fast_cache_reuse(tmp_path: Path) -> None:
     file_a.write_text("def alpha(): return 1\n", encoding="utf-8")
 
     scan = scan_repository(tmp_path)
-    manifest_1 = build_manifest(tmp_path, scan.files, scan.frameworks, project_name="test-proj")
+    manifest_1 = build_manifest(tmp_path, scan.files, scan.languages, project_name="test-proj")
 
     assert "a.py" in manifest_1.files
     assert manifest_1.files["a.py"].hash == compute_file_sha256(file_a)
@@ -29,7 +29,7 @@ def test_build_manifest_and_fast_cache_reuse(tmp_path: Path) -> None:
         manifest_2 = build_manifest(
             tmp_path,
             scan.files,
-            scan.frameworks,
+            scan.languages,
             previous_manifest=manifest_1,
             project_name="test-proj",
         )
@@ -77,7 +77,7 @@ def test_save_and_load_manifest_persistence(tmp_path: Path) -> None:
 
     (tmp_path / "app.py").write_text("print('ok')\n", encoding="utf-8")
     scan = scan_repository(tmp_path)
-    manifest = build_manifest(tmp_path, scan.files, frameworks=["FastAPI"])
+    manifest = build_manifest(tmp_path, scan.files, languages=["python"])
 
     saved_path = save_manifest(tmp_path, manifest)
     assert saved_path == (tmp_path / ".groma" / "manifest.json").resolve()
@@ -86,6 +86,6 @@ def test_save_and_load_manifest_persistence(tmp_path: Path) -> None:
     loaded = load_manifest(tmp_path)
     assert loaded is not None
     assert loaded.fingerprint == manifest.fingerprint
-    assert loaded.frameworks == ["FastAPI"]
+    assert loaded.languages == ["python"]
     assert "app.py" in loaded.files
 

@@ -1,9 +1,9 @@
-"""Dependency graph, import resolution, core hub detection, and impact radius analysis."""
+"""Dependency graph, cross-language import resolution, core hub detection, and impact radius."""
 
 from __future__ import annotations
 
 from collections import defaultdict
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 import networkx as nx
 
@@ -11,38 +11,106 @@ from groma.schema import FileIndex
 
 
 def _build_module_lookup(files: list[str]) -> dict[str, str]:
-    """Map candidate dotted module paths to relative POSIX file paths.
+    """Map candidate module/namespace/path keys to relative POSIX file paths.
 
-    Examples:
-      - 'groma/scanner.py' -> 'groma.scanner'
-      - 'groma/__init__.py' -> 'groma'
-      - 'src/app/auth.py' -> 'src.app.auth' and 'app.auth'
+    Supports:
+      - Python dotted modules ('groma/scanner.py' -> 'groma.scanner')
+      - PHP PSR-4 namespaces ('app/Models/User.php' -> 'app.models.user', 'App\\Models\\User')
+      - JS/TS/Vue paths & index files ('src/components/Header.vue' -> 'src/components/Header')
     """
     lookup: dict[str, str] = {}
 
     for rel_path in files:
         p = Path(rel_path)
-        # Drop extension for code files
-        parts = list(p.with_suffix("").parts)
+        no_ext = p.with_suffix("")
+        parts = list(no_ext.parts)
         if not parts:
             continue
 
-        # If it's an __init__ file, the package itself is the module
-        if parts[-1] == "__init__":
+        # Handle Python __init__.py and JS/TS index.(js|ts|tsx|jsx)
+        if parts[-1] in ("__init__", "index"):
             parts = parts[:-1]
             if not parts:
                 continue
+            lookup["/".join(parts)] = rel_path
 
-        # 1. Full dotted path: e.g. src.app.auth
+        # 1. Exact POSIX path without extension (for JS/TS imports)
+        posix_no_ext = no_ext.as_posix()
+        lookup[posix_no_ext] = rel_path
+        lookup[posix_no_ext.lower()] = rel_path
+        lookup[rel_path] = rel_path
+
+        # 2. Full dotted path (e.g. 'groma.scanner' or 'app.Models.User')
         full_dot = ".".join(parts)
         lookup[full_dot] = rel_path
+        lookup[full_dot.lower()] = rel_path
 
-        # 2. If path starts with common root markers like 'src' or 'lib', also register sub-path
+        # 3. Common source roots ('src/', 'lib/', 'app/', 'frontend/src/', 'backend/app/')
         if len(parts) > 1 and parts[0] in ("src", "lib", "app"):
             sub_dot = ".".join(parts[1:])
+            sub_posix = "/".join(parts[1:])
             lookup[sub_dot] = rel_path
+            lookup[sub_dot.lower()] = rel_path
+            lookup[sub_posix] = rel_path
+            lookup[sub_posix.lower()] = rel_path
+        if len(parts) > 2 and parts[1] in ("src", "app"):
+            sub_dot2 = ".".join(parts[2:])
+            sub_posix2 = "/".join(parts[2:])
+            lookup[sub_dot2] = rel_path
+            lookup[sub_dot2.lower()] = rel_path
+            lookup[sub_posix2] = rel_path
+            lookup[sub_posix2.lower()] = rel_path
+            # Also register from parts[1:] (e.g. backend/app/Models/User.php -> app.models.user)
+            sub_dot1 = ".".join(parts[1:])
+            lookup[sub_dot1] = rel_path
+            lookup[sub_dot1.lower()] = rel_path
 
     return lookup
+
+
+def _resolve_import_target(
+    source_path: str, raw_import: str, module_lookup: dict[str, str]
+) -> str | None:
+    """Resolve a single raw import string from `source_path` to a tracked repository file."""
+    imp = raw_import.strip()
+    if not imp:
+        return None
+
+    # 1. Relative JS/TS/Vue path imports: './foo' or '../bar/baz'
+    if imp.startswith("."):
+        base_dir = PurePosixPath(source_path).parent
+        norm_parts: list[str] = list(base_dir.parts) if str(base_dir) != "." else []
+        for seg in imp.split("/"):
+            if seg in ("", "."):
+                continue
+            if seg == "..":
+                if norm_parts:
+                    norm_parts.pop()
+            else:
+                norm_parts.append(seg)
+        rel_candidate = "/".join(norm_parts)
+        target = module_lookup.get(rel_candidate) or module_lookup.get(rel_candidate.lower())
+        if target:
+            return target
+
+    # 2. Alias imports in JS/TS/Vue: '@/components/Btn' or '~/utils/api'
+    if imp.startswith(("@/", "~/")):
+        stripped = imp[2:]
+        target = module_lookup.get(stripped) or module_lookup.get(stripped.lower())
+        if target:
+            return target
+
+    # 3. PHP namespace imports ('App\\Models\\User') or dotted Python imports ('groma.schema')
+    normalized = imp.replace("\\", ".").replace("/", ".").strip(".")
+    parts = [p for p in normalized.split(".") if p]
+
+    for i in range(len(parts), 0, -1):
+        prefix = ".".join(parts[:i])
+        target = module_lookup.get(prefix) or module_lookup.get(prefix.lower())
+        if target is not None:
+            return target
+
+    return None
 
 
 class DependencyGraph:
@@ -68,16 +136,9 @@ class DependencyGraph:
             resolved_targets: set[str] = set()
 
             for raw_import in analysis.imports:
-                # Walk down the import dotted path to find the longest matching module
-                # e.g., 'groma.schema.Manifest' -> test 'groma.schema.Manifest' then 'groma.schema'
-                parts = raw_import.split(".")
-                for i in range(len(parts), 0, -1):
-                    prefix = ".".join(parts[:i])
-                    target_file = module_lookup.get(prefix)
-                    if target_file is not None:
-                        if target_file != source_path:
-                            resolved_targets.add(target_file)
-                        break
+                target_file = _resolve_import_target(source_path, raw_import, module_lookup)
+                if target_file is not None and target_file != source_path:
+                    resolved_targets.add(target_file)
 
             for target in sorted(resolved_targets):
                 self.graph.add_edge(source_path, target)
@@ -120,11 +181,9 @@ class DependencyGraph:
 
         for target in changed_files:
             if target in self.graph:
-                # nx.ancestors returns all nodes that have a directed path leading to target
                 ancestors = nx.ancestors(self.graph, target)
                 impacted.update(ancestors)
 
-        # Exclude the changed files themselves from their own dependent impact list
         return sorted(impacted - changed_set)
 
     def to_dict(self) -> dict[str, dict[str, list[str]]]:
@@ -136,4 +195,3 @@ class DependencyGraph:
                 "imported_by": self.imported_by(node),
             }
         return dict(res)
-

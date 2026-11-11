@@ -34,7 +34,7 @@ def compute_project_fingerprint(files: dict[str, FileHashEntry]) -> str:
 def build_manifest(
     repo_root: Path,
     scanned_files: list[tuple[str, str]],
-    frameworks: list[str] | None = None,
+    languages: list[str] | None = None,
     previous_manifest: Manifest | None = None,
     project_name: str | None = None,
 ) -> Manifest:
@@ -48,6 +48,7 @@ def build_manifest(
     prev_files = previous_manifest.files if previous_manifest else {}
 
     file_entries: dict[str, FileHashEntry] = {}
+    detected_langs: set[str] = set(languages or [])
 
     for rel_posix, language in sorted(scanned_files, key=lambda item: item[0]):
         abs_path = repo_root / rel_posix
@@ -58,6 +59,7 @@ def build_manifest(
 
         size = stat.st_size
         mtime = stat.st_mtime
+        detected_langs.add(language)
 
         prev_entry = prev_files.get(rel_posix)
         if (
@@ -80,7 +82,7 @@ def build_manifest(
     return Manifest(
         project_name=resolved_project_name,
         fingerprint=fingerprint,
-        frameworks=sorted(frameworks) if frameworks else [],
+        languages=sorted(detected_langs),
         files=file_entries,
     )
 

@@ -26,7 +26,7 @@ def _sample_fixtures() -> tuple[Manifest, FileIndex, DependencyGraph]:
     manifest = Manifest(
         project_name="my-service",
         fingerprint="abcd1234ef567890",
-        frameworks=["FastAPI", "SQLAlchemy"],
+        languages=["php", "python"],
         files={
             "app/main.py": FileHashEntry(hash="h1", size=500, mtime=100.0, language="python"),
             "app/auth.py": FileHashEntry(hash="h2", size=800, mtime=100.0, language="python"),
@@ -103,13 +103,13 @@ def _sample_fixtures() -> tuple[Manifest, FileIndex, DependencyGraph]:
 
 
 def test_generate_architecture_doc() -> None:
-    """Verify architecture.md includes overview, hubs, and route table."""
+    """Verify architecture.md includes overview, languages, hubs, and route table."""
     manifest, file_index, graph = _sample_fixtures()
     doc = generate_architecture_doc(manifest, file_index, graph)
 
     assert "# my-service — System Architecture & Core Map" in doc
-    assert "FastAPI" in doc
-    assert "SQLAlchemy" in doc
+    assert "`php`" in doc
+    assert "`python`" in doc
     assert "`app/auth.py`" in doc  # Hub imported by main.py
     assert "| `POST` | `/login` | `login_handler` | `app/main.py:35` |" in doc
 
@@ -150,11 +150,11 @@ def test_generate_skill_doc() -> None:
 
 
 def test_generate_all_docs_on_disk(tmp_path: Path) -> None:
-    """Verify render_all_docs creates markdown, skill, and rule files on disk."""
+    """Verify render_all_docs creates markdown, skill, rule, and MCP config files on disk."""
     manifest, file_index, graph = _sample_fixtures()
     paths = generate_all_docs(tmp_path, manifest, file_index, graph)
 
-    assert len(paths) == 6
+    assert len(paths) == 7
     for p in paths:
         assert p.is_file()
 
@@ -164,4 +164,5 @@ def test_generate_all_docs_on_disk(tmp_path: Path) -> None:
     assert (tmp_path / ".agents" / "skills" / "my-service-knowledge" / "SKILL.md").is_file()
     assert (tmp_path / ".agents" / "rules" / "groma-sync.md").is_file()
     assert (tmp_path / ".cursorrules").is_file()
+    assert (tmp_path / ".cursor" / "mcp.json").is_file()
 

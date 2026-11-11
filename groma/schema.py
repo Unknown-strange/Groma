@@ -41,9 +41,9 @@ class Manifest(BaseModel):
     fingerprint: str = Field(
         ..., description="Summary SHA-256 hash computed over all sorted path:hash pairs"
     )
-    frameworks: list[str] = Field(
+    languages: list[str] = Field(
         default_factory=list,
-        description="Detected frameworks (e.g. FastAPI, Django, Next.js, React)",
+        description="Languages dynamically indexed in the repository (e.g. python, php, typescript)",
     )
     files: dict[str, FileHashEntry] = Field(
         default_factory=dict,

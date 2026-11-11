@@ -23,7 +23,7 @@ def test_manifest_round_trip_serialization() -> None:
     manifest = Manifest(
         project_name="demo-repo",
         fingerprint="abc123fingerprint",
-        frameworks=["FastAPI", "React"],
+        languages=["python", "typescript"],
         files={"app/main.py": entry},
     )
 
@@ -32,7 +32,7 @@ def test_manifest_round_trip_serialization() -> None:
 
     assert restored.project_name == "demo-repo"
     assert restored.fingerprint == "abc123fingerprint"
-    assert restored.frameworks == ["FastAPI", "React"]
+    assert restored.languages == ["python", "typescript"]
     assert "app/main.py" in restored.files
     assert restored.files["app/main.py"].size == 1024
     assert restored.files["app/main.py"].language == "python"

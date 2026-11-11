@@ -1,4 +1,4 @@
-"""Typer + Rich CLI Orchestrator for Groma: scan, check, and update."""
+"""Typer + Rich CLI Orchestrator for Groma: scan, check, update, find, and mcp."""
 
 from __future__ import annotations
 
@@ -19,12 +19,13 @@ from groma.manifest import (
     load_manifest,
     save_manifest,
 )
+from groma.mcp_server import ensure_state_loaded, run_mcp_stdio_server, search_knowledge_base
 from groma.parsers import build_file_index, load_file_index, save_file_index
 from groma.scanner import scan_repository
 
 app = typer.Typer(
     name="groma",
-    help="Deterministic codebase knowledge & skill generator for IDE AI agents.",
+    help="Deterministic codebase knowledge, symbol search & MCP server for IDE AI agents.",
     add_completion=False,
     no_args_is_help=True,
 )
@@ -66,19 +67,19 @@ def scan_cmd(
 ) -> None:
     """Perform a full baseline scan, parse symbols, build graph, and generate docs."""
     with console.status("[bold cyan]Scanning repository and building knowledge graph...[/bold cyan]"):
-        # 1. Scan files and frameworks
+        # 1. Scan files and languages across the repo
         scan_result = scan_repository(target_dir)
 
         # 2. Build SHA-256 manifest
-        manifest = build_manifest(target_dir, scan_result.files, scan_result.frameworks)
+        manifest = build_manifest(target_dir, scan_result.files, scan_result.languages)
 
-        # 3. Parse ASTs
+        # 3. Parse ASTs & universal multi-language symbols
         file_index = build_file_index(target_dir, scan_result.files)
 
         # 4. Build Dependency Graph
         graph = DependencyGraph(file_index)
 
-        # 5. Generate Markdown and Skill docs
+        # 5. Generate Markdown, Skill docs, and MCP/Agent rules
         generated_docs = generate_all_docs(target_dir, manifest, file_index, graph)
 
         # 6. Persist machine state
@@ -93,19 +94,20 @@ def scan_cmd(
     table.add_row("Project Name", manifest.project_name)
     table.add_row("Tracked Files", str(len(manifest.files)))
     table.add_row(
-        "Frameworks",
-        ", ".join(manifest.frameworks) if manifest.frameworks else "None detected",
+        "Indexed Languages",
+        ", ".join(manifest.languages) if manifest.languages else "None detected",
     )
     table.add_row("Core Hubs", str(len(graph.core_hubs())))
     table.add_row("Summary Fingerprint", f"[bold yellow]{manifest.fingerprint[:16]}...[/bold yellow]")
-    table.add_row("Generated Docs", f"{len(generated_docs)} files (.groma/ & .agents/)")
+    table.add_row("Generated Docs", f"{len(generated_docs)} files (.groma/, .agents/, .cursor/)")
 
     console.print(table)
     console.print(
         Panel(
             "[bold green]✓ Baseline scan complete![/bold green]\n"
-            "Run [bold cyan]groma check[/bold cyan] anytime to verify freshness, or "
-            "[bold cyan]groma update[/bold cyan] after making code changes.",
+            "• Query symbols anytime with [bold cyan]groma find <query>[/bold cyan]\n"
+            "• Verify freshness with [bold cyan]groma check[/bold cyan] or sync changes with "
+            "[bold cyan]groma update[/bold cyan]",
             border_style="green",
         )
     )
@@ -142,7 +144,7 @@ def check_cmd(
         current_manifest = build_manifest(
             target_dir,
             scan_result.files,
-            scan_result.frameworks,
+            scan_result.languages,
             previous_manifest=old_manifest,
             project_name=old_manifest.project_name,
         )
@@ -238,7 +240,7 @@ def update_cmd(
         current_manifest = build_manifest(
             target_dir,
             scan_result.files,
-            scan_result.frameworks,
+            scan_result.languages,
             previous_manifest=old_manifest,
             project_name=old_manifest.project_name,
         )
@@ -280,3 +282,65 @@ def update_cmd(
             border_style="green",
         )
     )
+
+
+@app.command(name="find")
+def find_cmd(
+    query: Annotated[
+        str,
+        typer.Argument(help="Symbol, class, function, route, or filename substring to search."),
+    ],
+    target_dir: Annotated[
+        Path,
+        typer.Argument(
+            help="Path to repository root.",
+            exists=True,
+            file_okay=False,
+            dir_okay=True,
+            resolve_path=True,
+        ),
+    ] = Path("."),
+) -> None:
+    """Fast sub-10ms search across all indexed files, classes, methods, functions, and routes."""
+    _, file_index, _ = ensure_state_loaded(target_dir)
+    matches = search_knowledge_base(file_index, query)
+
+    if not matches:
+        console.print(f"[yellow]No files, symbols, or routes found matching '{query}'.[/yellow]")
+        raise typer.Exit(code=1)
+
+    table = Table(
+        title=f"[bold green]Groma Search Results for '{query}' ({len(matches)} matches)[/bold green]",
+        show_header=True,
+    )
+    table.add_column("Type", style="cyan", no_wrap=True)
+    table.add_column("Symbol / Name", style="bold white")
+    table.add_column("Location", style="yellow")
+    table.add_column("Details", style="dim")
+
+    for m in matches[:50]:
+        table.add_row(
+            str(m["kind"]).upper(),
+            str(m["name"]),
+            f"{m['file']}:{m['line']}",
+            str(m["detail"]),
+        )
+
+    console.print(table)
+
+
+@app.command(name="mcp")
+def mcp_cmd(
+    target_dir: Annotated[
+        Path,
+        typer.Argument(
+            help="Path to repository root.",
+            exists=True,
+            file_okay=False,
+            dir_okay=True,
+            resolve_path=True,
+        ),
+    ] = Path("."),
+) -> None:
+    """Start the Groma Model Context Protocol (MCP) server over stdio."""
+    run_mcp_stdio_server(target_dir)

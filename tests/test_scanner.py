@@ -1,9 +1,8 @@
-"""Unit tests for Groma's repository scanner, .gitignore filter, and dependency exclusions."""
+"""Unit tests for Groma's universal repository scanner, .gitignore filter, and dependency exclusions."""
 
-import json
 from pathlib import Path
 
-from groma.scanner import detect_frameworks, is_dependency_file, scan_repository
+from groma.scanner import is_dependency_file, scan_repository
 
 
 def test_ignores_all_gitignore_files_and_directories(tmp_path: Path) -> None:
@@ -34,6 +33,7 @@ def test_ignores_all_gitignore_files_and_directories(tmp_path: Path) -> None:
         ("main.py", "python"),
         ("src/app.ts", "typescript"),
     ]
+    assert result.languages == ["python", "typescript"]
 
 
 def test_ignores_dependency_files_and_folders_across_projects(tmp_path: Path) -> None:
@@ -73,7 +73,7 @@ def test_ignores_dependency_files_and_folders_across_projects(tmp_path: Path) ->
     vendor_dir.mkdir(parents=True)
     (vendor_dir / "lib.py").write_text("pass", encoding="utf-8")
 
-    # Non-code assets (images, markdown, logs)
+    # Non-code assets (images, markdown)
     (tmp_path / "diagram.jpg").write_bytes(b"\xff\xd8\xff")
     (tmp_path / "README.md").write_text("# Readme", encoding="utf-8")
 
@@ -89,23 +89,18 @@ def test_ignores_dependency_files_and_folders_across_projects(tmp_path: Path) ->
     assert is_dependency_file("package-lock.json") is True
 
 
-def test_detect_frameworks_across_ecosystems(tmp_path: Path) -> None:
-    """Verify passive framework detection from project files."""
-    (tmp_path / "requirements.txt").write_text("fastapi>=0.100.0\nsqlalchemy\n", encoding="utf-8")
-    (tmp_path / "package.json").write_text(
-        json.dumps(
-            {
-                "dependencies": {"next": "14.0.0", "react": "18.2.0"},
-                "devDependencies": {"@nestjs/core": "10.0.0"},
-            }
-        ),
-        encoding="utf-8",
-    )
-    (tmp_path / "composer.json").write_text(
-        json.dumps({"require": {"laravel/framework": "^10.0"}}),
-        encoding="utf-8",
-    )
+def test_full_stack_multi_language_indexing(tmp_path: Path) -> None:
+    """Verify PHP, Vue, TypeScript, SQL, YAML, Go, and Rust files are all indexed."""
+    (tmp_path / "UsersTableSeeder.php").write_text("<?php class UsersTableSeeder {}", encoding="utf-8")
+    (tmp_path / "Dashboard.vue").write_text("<script setup></script>", encoding="utf-8")
+    (tmp_path / "schema.sql").write_text("CREATE TABLE users (id INT);", encoding="utf-8")
+    (tmp_path / "docker-compose.yml").write_text("services:\n  db:\n    image: mysql:8", encoding="utf-8")
+    (tmp_path / "server.go").write_text("package main", encoding="utf-8")
+    (tmp_path / "lib.rs").write_text("pub struct Engine;", encoding="utf-8")
 
-    frameworks = detect_frameworks(tmp_path)
-    assert frameworks == ["FastAPI", "Laravel", "NestJS", "Next.js", "React", "SQLAlchemy"]
-
+    result = scan_repository(tmp_path)
+    assert result.languages == ["go", "php", "rust", "sql", "vue", "yaml"]
+    assert ("UsersTableSeeder.php", "php") in result.files
+    assert ("Dashboard.vue", "vue") in result.files
+    assert ("schema.sql", "sql") in result.files
+    assert ("docker-compose.yml", "yaml") in result.files

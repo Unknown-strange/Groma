@@ -53,9 +53,11 @@ def _update_json_mcp_config(
     data: dict[str, object] = {}
     if file_path.is_file():
         try:
-            loaded = json.loads(file_path.read_text(encoding="utf-8"))
-            if isinstance(loaded, dict):
-                data = loaded
+            raw = file_path.read_text(encoding="utf-8").strip()
+            if raw:
+                loaded = json.loads(raw)
+                if isinstance(loaded, dict):
+                    data = loaded
         except (OSError, json.JSONDecodeError) as e:
             return "error", f"Failed to parse existing JSON: {e}"
 

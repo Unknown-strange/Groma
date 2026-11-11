@@ -38,3 +38,14 @@ def test_update_json_mcp_config_creates_and_updates(tmp_path: Path) -> None:
     content = cfg_file.read_text(encoding="utf-8")
     assert "/custom/path/groma" in content
 
+    # 3. Handle 0-byte empty file safely
+    empty_file = tmp_path / "empty.json"
+    empty_file.write_text("   \n", encoding="utf-8")
+    status_empty, msg_empty = _update_json_mcp_config(
+        empty_file,
+        "groma",
+        {"command": "/usr/local/bin/groma", "args": ["mcp", "."]},
+    )
+    assert status_empty == "registered"
+    assert "Successfully" in msg_empty
+

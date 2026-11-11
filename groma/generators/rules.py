@@ -54,7 +54,27 @@ def render_agent_rules(repo_root: Path) -> list[Path]:
         cursorrules_file.write_text(RULES_CONTENT, encoding="utf-8")
         generated.append(cursorrules_file)
 
-    # 3. .cursor/mcp.json (Registers Groma MCP server automatically in Cursor/IDEs)
+    # 3. .mcp.json in repository root (Vendor-neutral open MCP standard for Claude Code, Zed, etc.)
+    root_mcp_path = repo_root / ".mcp.json"
+    root_mcp_data: dict[str, dict[str, object]] = {"mcpServers": {}}
+    if root_mcp_path.is_file():
+        try:
+            loaded = json.loads(root_mcp_path.read_text(encoding="utf-8"))
+            if isinstance(loaded, dict):
+                root_mcp_data = loaded
+                if not isinstance(root_mcp_data.get("mcpServers"), dict):
+                    root_mcp_data["mcpServers"] = {}
+        except (OSError, json.JSONDecodeError):
+            root_mcp_data = {"mcpServers": {}}
+
+    root_mcp_data["mcpServers"]["groma"] = {
+        "command": "groma",
+        "args": ["mcp", "."],
+    }
+    root_mcp_path.write_text(json.dumps(root_mcp_data, indent=2) + "\n", encoding="utf-8")
+    generated.append(root_mcp_path)
+
+    # 4. .cursor/mcp.json (Cursor IDE workspace integration)
     cursor_dir = repo_root / ".cursor"
     mcp_config_path = cursor_dir / "mcp.json"
     mcp_data: dict[str, dict[str, object]] = {"mcpServers": {}}

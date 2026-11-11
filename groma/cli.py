@@ -341,6 +341,65 @@ def mcp_cmd(
             resolve_path=True,
         ),
     ] = Path("."),
+    register: Annotated[
+        bool,
+        typer.Option(
+            "--register",
+            "-r",
+            help="Register Groma MCP server into Antigravity and Claude configs.",
+        ),
+    ] = False,
 ) -> None:
-    """Start the Groma Model Context Protocol (MCP) server over stdio."""
+    """Start the Groma Model Context Protocol (MCP) server over stdio, or register it."""
+    if register:
+        _perform_mcp_registration()
+        return
+
     run_mcp_stdio_server(target_dir)
+
+
+@app.command(name="register")
+def register_cmd() -> None:
+    """Automatically register Groma MCP server into Google Antigravity and Claude Desktop."""
+    _perform_mcp_registration()
+
+
+def _perform_mcp_registration() -> None:
+    """Detect installed AI IDEs and configure Groma MCP with absolute binary path."""
+    from groma.mcp_registry import find_groma_executable, register_all_ides
+
+    exe_path = find_groma_executable()
+    console.print(f"[bold cyan]Resolved Groma executable:[/bold cyan] [yellow]{exe_path}[/yellow]\n")
+
+    results = register_all_ides(exe_path)
+
+    if not results:
+        console.print("[yellow]No supported global IDE configuration folders detected.[/yellow]")
+        console.print("You can manually configure Groma in your editor with:")
+        console.print(f"  Command: {exe_path}\n  Args: ['mcp', '.']\n")
+        return
+
+    table = Table(title="[bold green]Groma MCP IDE Auto-Registration[/bold green]", show_header=True)
+    table.add_column("Environment / IDE", style="cyan", no_wrap=True)
+    table.add_column("Status", style="bold")
+    table.add_column("Config File", style="yellow")
+    table.add_column("Message", style="dim")
+
+    for r in results:
+        status_color = "green" if r.status in ("registered", "updated") else "red"
+        table.add_row(
+            r.ide_name,
+            f"[{status_color}]{r.status.upper()}[/{status_color}]",
+            str(r.config_path),
+            r.message,
+        )
+
+    console.print(table)
+    console.print(
+        Panel(
+            "[bold green]✓ Registration complete![/bold green]\n"
+            "• Restart or reload your AI editor (Antigravity / Claude) to activate Groma tools.\n"
+            "• Groma tools (`groma_overview`, `groma_find_symbol`) will now appear natively.",
+            border_style="green",
+        )
+    )

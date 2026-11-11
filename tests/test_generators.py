@@ -154,7 +154,7 @@ def test_generate_all_docs_on_disk(tmp_path: Path) -> None:
     manifest, file_index, graph = _sample_fixtures()
     paths = generate_all_docs(tmp_path, manifest, file_index, graph)
 
-    assert len(paths) == 7
+    assert len(paths) == 8
     for p in paths:
         assert p.is_file()
 
@@ -164,5 +164,6 @@ def test_generate_all_docs_on_disk(tmp_path: Path) -> None:
     assert (tmp_path / ".agents" / "skills" / "my-service-knowledge" / "SKILL.md").is_file()
     assert (tmp_path / ".agents" / "rules" / "groma-sync.md").is_file()
     assert (tmp_path / ".cursorrules").is_file()
+    assert (tmp_path / ".mcp.json").is_file()
     assert (tmp_path / ".cursor" / "mcp.json").is_file()
 

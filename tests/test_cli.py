@@ -81,3 +81,11 @@ def test_cli_update_when_clean(tmp_path: Path) -> None:
     assert res_update.exit_code == 0
     assert "already up to date" in res_update.stdout
 
+
+def test_cli_register_command() -> None:
+    """Verify groma register command executes and resolves executable."""
+    result = runner.invoke(app, ["register"])
+    assert result.exit_code == 0
+    assert "Resolved Groma executable" in result.stdout
+
+

@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "groma": {
+      "command": "groma",
+      "args": [
+        "mcp",
+        "."
+      ]
+    }
+  }
+}

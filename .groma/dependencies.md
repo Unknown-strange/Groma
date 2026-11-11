@@ -125,6 +125,15 @@
 
 ---
 
+### `groma/mcp_registry.py`
+
+**Imports (Outgoing Dependencies):** None (isolated from internal imports)
+
+**Imported By (1 Dependents):**
+- `tests/test_mcp_registry.py`
+
+---
+
 ### `groma/mcp_server.py`
 
 **Imports (Outgoing Dependencies):**
@@ -258,6 +267,15 @@
 **Imports (Outgoing Dependencies):**
 - `groma/cli.py`
 - `groma/mcp_server.py`
+
+**Imported By:** None (Leaf node or top-level entrypoint)
+
+---
+
+### `tests/test_mcp_registry.py`
+
+**Imports (Outgoing Dependencies):**
+- `groma/mcp_registry.py`
 
 **Imported By:** None (Leaf node or top-level entrypoint)
 

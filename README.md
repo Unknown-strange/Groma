@@ -171,6 +171,35 @@ py -m groma scan .
 
 ---
 
+### ⚡ Essential Next Step: Connect Your AI Editor (`groma register`)
+
+After installing Groma, run this command **once** in your terminal:
+
+```bash
+groma register
+```
+
+#### Why Do You Need to Run `groma register`?
+- **Desktop GUI Apps Don't Inherit Shell PATHs**: When you install CLI tools with `pipx` or `pip`, the executable is placed in `~/.local/bin` or your Python library folder. Your terminal (`zsh` or `bash`) finds it because of your `.zshrc`. However, desktop GUI editors (**Google Antigravity**, **Claude Desktop**, **Cursor**) launched from macOS Finder, the Dock, or Windows Start Menu do **not** inherit your shell profile's custom `$PATH`.
+- **Absolute Binary Resolution**: Running `groma register` automatically discovers the exact absolute path to your `groma` executable (e.g. `/Users/yourname/.local/bin/groma`) and configures it in your AI editors:
+  - **Google Antigravity**: Registers into `~/.gemini/antigravity/mcp_servers.json` and `~/.gemini/config/mcp_config.json`.
+  - **Claude Desktop**: Registers into `claude_desktop_config.json`.
+  - **Cursor**: Registers into `.cursor/mcp.json` and `.mcp.json`.
+- **Instant AI Tools**: After running `groma register`, simply reload or restart your editor. Your AI assistant will now natively see and use all 5 Groma tools (`groma_overview`, `groma_find_symbol`, `groma_file_details`, `groma_impact_radius`, `groma_sync_status`) directly in chat with sub-10ms response times.
+
+---
+
+### 🚀 Running Groma in Your Project
+
+Once installed and registered, open any project folder and run:
+
+```bash
+cd /path/to/your-project
+groma scan
+```
+
+---
+
 ## 🔄 How to Update / Upgrade
 
 If you or your team already installed an older version of Groma, run the appropriate command to upgrade to the latest release:
@@ -178,16 +207,19 @@ If you or your team already installed an older version of Groma, run the appropr
 ### For `pipx` users (Global install):
 ```bash
 pipx install --force git+https://github.com/Unknown-strange/Groma.git
+groma register
 ```
 
 ### For `pip` users (Virtual environment):
 ```bash
 python3 -m pip install --upgrade --force-reinstall git+https://github.com/Unknown-strange/Groma.git
+groma register
 ```
 
 ### For `npm` users:
 ```bash
 npm install -g git+https://github.com/Unknown-strange/Groma.git
+groma register
 ```
 *(Note: If using `npx`, it automatically uses the latest version on each invocation).*
 
@@ -256,7 +288,7 @@ groma update /path/to/another-project
 ---
 
 ### 5. `groma mcp [PATH]` — Model Context Protocol Server
-Runs Groma as an active MCP JSON-RPC 2.0 server over `stdio`. Cursor, Antigravity, and Claude Code connect automatically via `.cursor/mcp.json` to query:
+Runs Groma as an active MCP JSON-RPC 2.0 server over `stdio`. Exposes 5 deterministic tools to AI agents:
 - `groma_overview`: Project summary, language breakdown, and Core Hubs.
 - `groma_find_symbol`: Instant search for classes, methods, seeders, routes.
 - `groma_file_details`: Complete classes, methods, imports, and dependents for a file.
@@ -264,12 +296,29 @@ Runs Groma as an active MCP JSON-RPC 2.0 server over `stdio`. Cursor, Antigravit
 - `groma_sync_status`: Working tree freshness verification and auto-update.
 
 ```bash
+# Start MCP server manually over stdio
 groma mcp .
 ```
 
 ---
 
-### 6. `groma --version` / `groma --help`
+### 6. `groma register` — Automatic Multi-IDE MCP Setup
+Scans your system for installed AI IDEs, resolves the exact absolute path to your `groma` binary (avoiding PATH resolution issues in GUI applications), and registers Groma into:
+- **Google Antigravity**: `~/.gemini/antigravity/mcp_servers.json` and `~/.gemini/config/mcp_config.json`
+- **Claude Desktop**: `claude_desktop_config.json`
+- **Cursor**: Workspace and global configurations
+
+```bash
+# Register Groma MCP into all detected IDEs
+groma register
+
+# (Equivalent shortcut)
+groma mcp --register
+```
+
+---
+
+### 7. `groma --version` / `groma --help`
 ```bash
 groma --version   # Display installed Groma version (e.g. 0.2.0)
 groma --help      # Show all available commands and options
@@ -295,9 +344,12 @@ your-project/
 │   │   └── <project>-knowledge/
 │   │       └── SKILL.md    # AI Agent skill entrypoint with YAML frontmatter & fingerprint
 │   └── rules/
-│       └── groma-sync.md   # Zero-lag synchronization rules for Antigravity & multi-agent IDEs
+│       └── groma-sync.md   # Universal synchronization rules for Antigravity & multi-agent IDEs
 │
-└── .cursorrules            # Automatic synchronization rules for Cursor IDE
+├── .mcp.json               # Vendor-neutral open MCP server configuration (Claude Code, Zed)
+├── .cursorrules            # Automatic synchronization rules for Cursor IDE
+└── .cursor/
+    └── mcp.json            # Automatic MCP server configuration for Cursor IDE
 ```
 
 > **Note**: Because `.groma/` and `.agents/` start with a dot (`.`), they may be hidden in your editor's sidebar by default. In VS Code or Cursor, press <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>.</kbd> (Mac) or <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>.</kbd> (Windows/Linux) to toggle hidden files.

@@ -34,7 +34,7 @@
 
 ## `groma/cli.py`
 
-- **Language**: `python` | **Lines**: 346 | **Size**: 11,635 bytes
+- **Language**: `python` | **Lines**: 405 | **Size**: 13,772 bytes
 - **Module Docstring**: *Typer + Rich CLI Orchestrator for Groma: scan, check, update, find, and mcp.*
 
 ### Top-Level Functions
@@ -50,8 +50,12 @@
   - *Fast incremental rebuild. Re-parses ONLY changed files and synchronizes docs.*
 - `def find_cmd(query: Annotated[str, typer.Argument(help='Symbol, class, function, route, or filename substring to search.')], target_dir: Annotated[Path, typer.Argument(help='Path to repository root.', exists=True, file_okay=False, dir_okay=True, resolve_path=True)] = Path('.')) -> None` (lines 288–329)
   - *Fast sub-10ms search across all indexed files, classes, methods, functions, and routes.*
-- `def mcp_cmd(target_dir: Annotated[Path, typer.Argument(help='Path to repository root.', exists=True, file_okay=False, dir_okay=True, resolve_path=True)] = Path('.')) -> None` (lines 333–346)
-  - *Start the Groma Model Context Protocol (MCP) server over stdio.*
+- `def mcp_cmd(target_dir: Annotated[Path, typer.Argument(help='Path to repository root.', exists=True, file_okay=False, dir_okay=True, resolve_path=True)] = Path('.'), register: Annotated[bool, typer.Option('--register', '-r', help='Register Groma MCP server into Antigravity and Claude configs.')] = False) -> None` (lines 333–358)
+  - *Start the Groma Model Context Protocol (MCP) server over stdio, or register it.*
+- `def register_cmd() -> None` (lines 362–364)
+  - *Automatically register Groma MCP server into Google Antigravity and Claude Desktop.*
+- `def _perform_mcp_registration() -> None` (lines 367–405)
+  - *Detect installed AI IDEs and configure Groma MCP with absolute binary path.*
 
 ---
 
@@ -89,12 +93,12 @@
 
 ## `groma/generators/rules.py`
 
-- **Language**: `python` | **Lines**: 79 | **Size**: 3,526 bytes
+- **Language**: `python` | **Lines**: 99 | **Size**: 4,376 bytes
 - **Module Docstring**: *Agent rule and MCP configuration generator for IDE AI agents (Cursor, Antigravity, Claude Code).*
 
 ### Top-Level Functions
 
-- `def render_agent_rules(repo_root: Path) -> list[Path]` (lines 30–79)
+- `def render_agent_rules(repo_root: Path) -> list[Path]` (lines 30–99)
   - *Write agent rule files (.agents/rules/groma-sync.md, .cursorrules) and .cursor/mcp.json.*
 
 ---
@@ -164,6 +168,30 @@
   - *Write `.groma/manifest.json` to disk and return the saved file path.*
 - `def load_manifest(repo_root: Path) -> Manifest | None` (lines 157–163)
   - *Load `.groma/manifest.json` from disk, or return None if it does not exist.*
+
+---
+
+## `groma/mcp_registry.py`
+
+- **Language**: `python` | **Lines**: 151 | **Size**: 5,140 bytes
+- **Module Docstring**: *Multi-IDE MCP registration utility for Antigravity, Claude Desktop, and Cursor.*
+
+### Classes
+
+- **`class RegistrationResult(NamedTuple)`** (lines 13–17)
+
+### Top-Level Functions
+
+- `def find_groma_executable() -> str` (lines 20–43)
+  - *Find the best executable path for running Groma in GUI/IDE contexts.*
+- `def _update_json_mcp_config(file_path: Path, server_name: str, server_config: dict[str, object], servers_key: str = 'mcpServers') -> tuple[str, str]` (lines 46–76)
+  - *Safely insert or update an MCP server entry in a JSON configuration file.*
+- `def register_antigravity(executable: str) -> list[RegistrationResult]` (lines 79–109)
+  - *Register Groma MCP server in Google Antigravity global configurations.*
+- `def register_claude_desktop(executable: str) -> list[RegistrationResult]` (lines 112–140)
+  - *Register Groma MCP server in Claude Desktop configuration.*
+- `def register_all_ides(executable: str | None = None) -> list[RegistrationResult]` (lines 143–151)
+  - *Detect and register Groma in all installed AI IDEs and editors.*
 
 ---
 
@@ -335,7 +363,7 @@
 
 ## `tests/test_generators.py`
 
-- **Language**: `python` | **Lines**: 168 | **Size**: 5,291 bytes
+- **Language**: `python` | **Lines**: 169 | **Size**: 5,337 bytes
 - **Module Docstring**: *Unit tests for Groma's markdown and SKILL.md document generators.*
 
 ### Top-Level Functions
@@ -350,7 +378,7 @@
   - *Verify dependencies.md documents internal imports and imported_by.*
 - `def test_generate_skill_doc() -> None` (lines 140–149)
   - *Verify SKILL.md YAML frontmatter and rules.*
-- `def test_generate_all_docs_on_disk(tmp_path: Path) -> None` (lines 152–167)
+- `def test_generate_all_docs_on_disk(tmp_path: Path) -> None` (lines 152–168)
   - *Verify render_all_docs creates markdown, skill, rule, and MCP config files on disk.*
 
 ---
@@ -396,6 +424,20 @@
   - *Verify MCP JSON-RPC initialize, tools/list, and tools/call across a full-stack repo.*
 - `def test_cli_find_command(tmp_path: Path) -> None` (lines 98–111)
   - *Verify `groma find <query>` locates symbols from the CLI.*
+
+---
+
+## `tests/test_mcp_registry.py`
+
+- **Language**: `python` | **Lines**: 39 | **Size**: 1,138 bytes
+- **Module Docstring**: *Tests for MCP multi-IDE registration.*
+
+### Top-Level Functions
+
+- `def test_find_groma_executable() -> None` (lines 8–12)
+  - *Verify executable resolver returns a non-empty string.*
+- `def test_update_json_mcp_config_creates_and_updates(tmp_path: Path) -> None` (lines 15–39)
+  - *Verify MCP JSON configuration creation and safe updates.*
 
 ---
 

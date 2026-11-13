@@ -34,7 +34,7 @@
 
 ## `groma/cli.py`
 
-- **Language**: `python` | **Lines**: 405 | **Size**: 13,772 bytes
+- **Language**: `python` | **Lines**: 453 | **Size**: 15,767 bytes
 - **Module Docstring**: *Typer + Rich CLI Orchestrator for Groma: scan, check, update, find, and mcp.*
 
 ### Top-Level Functions
@@ -54,7 +54,9 @@
   - *Start the Groma Model Context Protocol (MCP) server over stdio, or register it.*
 - `def register_cmd() -> None` (lines 362–364)
   - *Automatically register Groma MCP server into Google Antigravity and Claude Desktop.*
-- `def _perform_mcp_registration() -> None` (lines 367–405)
+- `def upgrade_cmd(source: Annotated[str, typer.Option('--source', '-s', help='Git repository URL to upgrade from.')] = 'git+https://github.com/Unknown-strange/Groma.git') -> None` (lines 368–412)
+  - *Self-upgrade Groma to the latest release from GitHub and re-register IDEs.*
+- `def _perform_mcp_registration() -> None` (lines 415–453)
   - *Detect installed AI IDEs and configure Groma MCP with absolute binary path.*
 
 ---
@@ -349,7 +351,7 @@
 
 ## `tests/test_cli.py`
 
-- **Language**: `python` | **Lines**: 91 | **Size**: 3,494 bytes
+- **Language**: `python` | **Lines**: 108 | **Size**: 4,139 bytes
 - **Module Docstring**: *Integration tests for the Groma CLI commands: scan, check, and update.*
 
 ### Top-Level Functions
@@ -364,6 +366,8 @@
   - *Verify groma update reports already up to date when clean.*
 - `def test_cli_register_command() -> None` (lines 85–89)
   - *Verify groma register command executes and resolves executable.*
+- `def test_cli_upgrade_command(monkeypatch: object) -> None` (lines 92–106)
+  - *Verify groma upgrade runs and reports success when mocked.*
 
 ---
 

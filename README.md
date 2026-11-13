@@ -56,7 +56,8 @@ Because `groma check` exits with code `0` when up-to-date and code `1` when stal
 - **🧹 Smart `.gitignore` & Dependency Filtering**: Automatically respects root and nested `.gitignore` files and ignores dependency manifests/lockfiles (`package.json`, `package-lock.json`, `requirements.txt`, `pyproject.toml`, `poetry.lock`, `uv.lock`, `go.mod`, `Cargo.toml`, `node_modules/`, `.venv/`, `vendor/`) so non-code edits never trigger false staleness alerts.
 - **⚡ Sub-Second SHA-256 Fingerprinting**: Uses a fast `size` + `mtime` cache check before streaming 64 KB chunks through SHA-256. Unchanged files require zero disk reads.
 - **🔄 Rename-Aware Diff Engine**: Automatically detects when a file is moved or renamed by matching SHA-256 content hashes across deleted and added paths.
-- **🧠 Zero-Lag AI Rules**: Generates targeted rules so your AI responds immediately to casual questions (zero latency) and only runs `groma update` after modifying source code.
+- **🧠 Always-On Universal Rules (`AGENTS.md`)**: Generates root `AGENTS.md` and `.agents/rules/groma-sync.md` rules with `trigger: always_on` so Antigravity, Claude Code, Cursor, and Windsurf prioritize Groma's sub-10ms symbol index before falling back to `grep` or `find`.
+- **⚡ Sub-10ms Symbol Search & MCP Server**: Query classes, methods, routes, and seeders instantaneously via `groma find <query>` or native MCP tools (`groma_find_symbol`, `groma_overview`, `groma_file_details`, `groma_impact_radius`).
 
 ---
 
@@ -202,26 +203,57 @@ groma scan
 
 ## 🔄 How to Update / Upgrade
 
-If you or your team already installed an older version of Groma, run the appropriate command to upgrade to the latest release:
+If you or your team already installed an older version of Groma, use either of the options below to get the latest release:
 
-### For `pipx` users (Global install):
+### Option 1: Automatic One-Command Self-Upgrade (Recommended)
+
+Run `groma upgrade` from any terminal. It automatically pulls the latest version from GitHub and re-registers your AI editors:
+
+```bash
+groma upgrade
+```
+
+---
+
+### Option 2: Manual Upgrade via Package Manager
+
+If you prefer to upgrade manually via your package manager:
+
+#### For `pipx` users (Global CLI):
 ```bash
 pipx install --force git+https://github.com/Unknown-strange/Groma.git
 groma register
 ```
 
-### For `pip` users (Virtual environment):
+#### For `pip` users (Virtual environment):
 ```bash
 python3 -m pip install --upgrade --force-reinstall git+https://github.com/Unknown-strange/Groma.git
 groma register
 ```
 
-### For `npm` users:
+#### For `npm` users:
 ```bash
 npm install -g git+https://github.com/Unknown-strange/Groma.git
 groma register
 ```
-*(Note: If using `npx`, it automatically uses the latest version on each invocation).*
+*(Note: If using `npx`, it automatically fetches the latest version on each invocation).*
+
+---
+
+### 📦 Updating Existing Projects (Applying the Latest Fix)
+
+After upgrading the Groma CLI, navigate to any repository where you previously ran Groma and run:
+
+```bash
+cd /path/to/your-project
+groma update
+```
+
+This immediately applies the latest fixes and rules to your project:
+- **Always-On `AGENTS.md`**: Generates a standard `AGENTS.md` in your repository root, ensuring that **Google Antigravity**, **Claude Code**, **Cursor**, **Codex**, and **Windsurf** unconditionally load Groma discovery rules on every conversation turn.
+- **Balanced "Groma First, Fallback to Grep" Workflow**: Instructs AI agents to always use Groma's sub-10ms symbol index first for classes, methods, routes, seeders, and dependencies, and then use targeted `read_file` to inspect exact conditional/runtime logic. If Groma does not locate what they need (e.g., raw text strings, error messages, or non-code config values), agents cleanly fall back to `grep` or `find`.
+- **`trigger: always_on` in `.agents/rules/groma-sync.md`**: Prevents IDEs from lazily skipping the synchronization rules.
+- **Vendor-Neutral `.mcp.json`**: Ensures open-standard MCP clients automatically connect to Groma.
 
 ---
 
@@ -318,7 +350,17 @@ groma mcp --register
 
 ---
 
-### 7. `groma --version` / `groma --help`
+### 7. `groma upgrade` — Automatic Self-Upgrade from GitHub
+Pulls the latest release directly from GitHub and re-runs IDE registration so you never have to remember package manager flags.
+
+```bash
+# Upgrade Groma to the latest release
+groma upgrade
+```
+
+---
+
+### 8. `groma --version` / `groma --help`
 ```bash
 groma --version   # Display installed Groma version (e.g. 0.2.0)
 groma --help      # Show all available commands and options

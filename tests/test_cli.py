@@ -89,3 +89,20 @@ def test_cli_register_command() -> None:
     assert "Resolved Groma executable" in result.stdout
 
 
+def test_cli_upgrade_command(monkeypatch: object) -> None:
+    """Verify groma upgrade runs and reports success when mocked."""
+    import subprocess
+    from unittest.mock import MagicMock
+
+    mock_run = MagicMock(return_value=subprocess.CompletedProcess(args=["pipx"], returncode=0, stdout="Success!"))
+    import pytest
+    monkeypatch_fixture = pytest.MonkeyPatch()
+    monkeypatch_fixture.setattr(subprocess, "run", mock_run)
+
+    result = runner.invoke(app, ["upgrade"])
+    assert result.exit_code == 0
+    assert "Upgrading Groma from" in result.stdout
+    assert "Upgrade successful!" in result.stdout
+    monkeypatch_fixture.undo()
+
+

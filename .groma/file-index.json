@@ -1,6 +1,6 @@
 {
   "project_name": "Groma",
-  "updated_at": "2026-11-13T08:21:48.021381+00:00",
+  "updated_at": "2026-11-13T09:32:13.356124+00:00",
   "files": {
     "bin/groma.js": {
       "path": "bin/groma.js",
@@ -57,8 +57,8 @@
     "groma/cli.py": {
       "path": "groma/cli.py",
       "language": "python",
-      "size": 13772,
-      "lines_of_code": 405,
+      "size": 15767,
+      "lines_of_code": 453,
       "module_docstring": "Typer + Rich CLI Orchestrator for Groma: scan, check, update, find, and mcp.",
       "imports": [
         "__future__",
@@ -310,13 +310,38 @@
           ]
         },
         {
+          "name": "upgrade_cmd",
+          "params": [
+            "source: Annotated[str, typer.Option('--source', '-s', help='Git repository URL to upgrade from.')] = 'git+https://github.com/Unknown-strange/Groma.git'"
+          ],
+          "return_type": "None",
+          "decorators": [
+            "@app.command(name='upgrade')"
+          ],
+          "docstring": "Self-upgrade Groma to the latest release from GitHub and re-register IDEs.",
+          "start_line": 368,
+          "end_line": 412,
+          "is_async": false,
+          "calls": [
+            "' '.join",
+            "_perform_mcp_registration",
+            "app.command",
+            "console.print",
+            "proc.stderr.strip",
+            "proc.stdout.strip",
+            "shutil.which",
+            "subprocess.run",
+            "typer.Option"
+          ]
+        },
+        {
           "name": "_perform_mcp_registration",
           "params": [],
           "return_type": "None",
           "decorators": [],
           "docstring": "Detect installed AI IDEs and configure Groma MCP with absolute binary path.",
-          "start_line": 367,
-          "end_line": 405,
+          "start_line": 415,
+          "end_line": 453,
           "is_async": false,
           "calls": [
             "Panel",
@@ -2191,8 +2216,8 @@
     "tests/test_cli.py": {
       "path": "tests/test_cli.py",
       "language": "python",
-      "size": 3494,
-      "lines_of_code": 91,
+      "size": 4139,
+      "lines_of_code": 108,
       "module_docstring": "Integration tests for the Groma CLI commands: scan, check, and update.",
       "imports": [
         "groma.cli",
@@ -2286,6 +2311,26 @@
           "is_async": false,
           "calls": [
             "runner.invoke"
+          ]
+        },
+        {
+          "name": "test_cli_upgrade_command",
+          "params": [
+            "monkeypatch: object"
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "docstring": "Verify groma upgrade runs and reports success when mocked.",
+          "start_line": 92,
+          "end_line": 106,
+          "is_async": false,
+          "calls": [
+            "MagicMock",
+            "monkeypatch_fixture.setattr",
+            "monkeypatch_fixture.undo",
+            "pytest.MonkeyPatch",
+            "runner.invoke",
+            "subprocess.CompletedProcess"
           ]
         }
       ],

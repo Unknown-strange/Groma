@@ -364,6 +364,54 @@ def register_cmd() -> None:
     _perform_mcp_registration()
 
 
+@app.command(name="upgrade")
+def upgrade_cmd(
+    source: Annotated[
+        str,
+        typer.Option(
+            "--source",
+            "-s",
+            help="Git repository URL to upgrade from.",
+        ),
+    ] = "git+https://github.com/Unknown-strange/Groma.git",
+) -> None:
+    """Self-upgrade Groma to the latest release from GitHub and re-register IDEs."""
+    import shutil
+    import subprocess
+    import sys
+
+    console.print(f"[bold cyan]Upgrading Groma from[/bold cyan] [yellow]{source}[/yellow]...\n")
+
+    exe = shutil.which("groma")
+    cmd: list[str] = []
+
+    if (exe and "pipx" in exe) or (shutil.which("pipx") and not exe):
+        cmd = ["pipx", "install", "--force", source]
+    else:
+        python_bin = sys.executable or "python3"
+        cmd = [python_bin, "-m", "pip", "install", "--upgrade", "--force-reinstall", source]
+
+    console.print(f"[dim]Running: {' '.join(cmd)}[/dim]")
+    try:
+        proc = subprocess.run(cmd, capture_output=True, text=True, check=False)
+        if proc.returncode == 0:
+            console.print("[bold green]✓ Upgrade successful![/bold green]\n")
+            if proc.stdout:
+                console.print(f"[dim]{proc.stdout.strip()[:300]}[/dim]\n")
+            _perform_mcp_registration()
+        else:
+            console.print(f"[bold red]Upgrade command returned non-zero code {proc.returncode}:[/bold red]")
+            if proc.stderr:
+                console.print(f"[red]{proc.stderr.strip()}[/red]")
+            console.print("\n[yellow]You can upgrade manually by running:[/yellow]")
+            console.print(f"  {' '.join(cmd)}\n")
+    except (OSError, subprocess.SubprocessError) as e:
+        console.print(f"[bold red]Could not execute upgrade automatically:[/bold red] {e}")
+        console.print("\n[yellow]Run one of the following commands manually:[/yellow]")
+        console.print(f"  pipx install --force {source}")
+        console.print(f"  python3 -m pip install --upgrade --force-reinstall {source}")
+
+
 def _perform_mcp_registration() -> None:
     """Detect installed AI IDEs and configure Groma MCP with absolute binary path."""
     from groma.mcp_registry import find_groma_executable, register_all_ides

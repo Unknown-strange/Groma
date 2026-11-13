@@ -1,7 +1,7 @@
 {
   "project_name": "Groma",
-  "generated_at": "2026-11-13T08:21:48.005718+00:00",
-  "fingerprint": "19a187d009e4e6f023ca9118d6d9af0bf3b776e409176001c88f11609ac18c6c",
+  "generated_at": "2026-11-13T09:32:13.343107+00:00",
+  "fingerprint": "ceb7a119d22c6d1fb0afc2dbfbeb3f2a99b3dcac5f453bc023aa896bd34ad058",
   "languages": [
     "javascript",
     "python"
@@ -26,9 +26,9 @@
       "language": "python"
     },
     "groma/cli.py": {
-      "hash": "d55632c5cf4aa1a6ab5fdbe960352d65a9cdc9663819ac97542e3e31f47b91b6",
-      "size": 13772,
-      "mtime": 1794409763.4012604,
+      "hash": "1caf457076bb1c41f11555c107385c4262876ec7e4e0de928cab4312edf96656",
+      "size": 15767,
+      "mtime": 1794562311.5868206,
       "language": "python"
     },
     "groma/generators/__init__.py": {
@@ -46,7 +46,7 @@
     "groma/generators/rules.py": {
       "hash": "2de9f77858383821acfcc72d6caabba8124b5fd8c64fe84dd9497086b3e8ca2c",
       "size": 5706,
-      "mtime": 1794558100.0891278,
+      "mtime": 1794562118.7344549,
       "language": "python"
     },
     "groma/generators/skill.py": {
@@ -110,9 +110,9 @@
       "language": "python"
     },
     "tests/test_cli.py": {
-      "hash": "5b100bb54065b3c0cfc2912f48dc787809689f14f880f51c9c617b5840e324db",
-      "size": 3494,
-      "mtime": 1794410409.316833,
+      "hash": "0a52d33c4d5b3c46b23f9e1dae70d4250ae2459cdcb1d68e98e94300dbf91db4",
+      "size": 4139,
+      "mtime": 1794562190.9223049,
       "language": "python"
     },
     "tests/test_generators.py": {

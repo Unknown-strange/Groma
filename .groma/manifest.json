@@ -1,7 +1,7 @@
 {
   "project_name": "Groma",
-  "generated_at": "2026-11-11T15:08:02.544175+00:00",
-  "fingerprint": "8ccecc57c593ef940b697985890380014320fa0cabebbb4d09fbcfb45ee7b2f5",
+  "generated_at": "2026-11-13T08:21:48.005718+00:00",
+  "fingerprint": "19a187d009e4e6f023ca9118d6d9af0bf3b776e409176001c88f11609ac18c6c",
   "languages": [
     "javascript",
     "python"
@@ -28,7 +28,7 @@
     "groma/cli.py": {
       "hash": "d55632c5cf4aa1a6ab5fdbe960352d65a9cdc9663819ac97542e3e31f47b91b6",
       "size": 13772,
-      "mtime": 1794409621.1889288,
+      "mtime": 1794409763.4012604,
       "language": "python"
     },
     "groma/generators/__init__.py": {
@@ -44,9 +44,9 @@
       "language": "python"
     },
     "groma/generators/rules.py": {
-      "hash": "0340b1fa2e0174b38bc5ed760ef100ef6878b494a3ad459e873b2238ebe9577c",
-      "size": 4376,
-      "mtime": 1794409593.163247,
+      "hash": "2de9f77858383821acfcc72d6caabba8124b5fd8c64fe84dd9497086b3e8ca2c",
+      "size": 5706,
+      "mtime": 1794558100.0891278,
       "language": "python"
     },
     "groma/generators/skill.py": {
@@ -68,9 +68,9 @@
       "language": "python"
     },
     "groma/mcp_registry.py": {
-      "hash": "ec9f3195c22c5a46ab45fd96d693d73b4a3d7ee28d07a3a52639ff5f2ed37d4a",
-      "size": 5140,
-      "mtime": 1794409584.2580373,
+      "hash": "1e3b4170b42cfad14dbf3be164278e1bd322e849de9915d69e1a07af1293eeb3",
+      "size": 5203,
+      "mtime": 1794468591.467367,
       "language": "python"
     },
     "groma/mcp_server.py": {
@@ -110,15 +110,15 @@
       "language": "python"
     },
     "tests/test_cli.py": {
-      "hash": "4e3f7d886d7338d13db1b806e112b7fa5649f72f5a3121a4c16603962c6f0f28",
-      "size": 3241,
-      "mtime": 1794324615.2149851,
+      "hash": "5b100bb54065b3c0cfc2912f48dc787809689f14f880f51c9c617b5840e324db",
+      "size": 3494,
+      "mtime": 1794410409.316833,
       "language": "python"
     },
     "tests/test_generators.py": {
-      "hash": "65dd40121428fbf7c4a3a2cd9ecfcae0d10c23828aec3731f6a6cc0ca5c1bfe8",
-      "size": 5337,
-      "mtime": 1794409599.0208337,
+      "hash": "898aafb5f0f83e58fac50df5834bf60b60e23575a2eca8b7925e4c9a3d88d141",
+      "size": 6301,
+      "mtime": 1794558044.5079374,
       "language": "python"
     },
     "tests/test_graph.py": {
@@ -140,9 +140,9 @@
       "language": "python"
     },
     "tests/test_mcp_registry.py": {
-      "hash": "06bc58ce7efa3ea340209fa58377dd203e00406b48e96a6fc7911c8741ddd37d",
-      "size": 1138,
-      "mtime": 1794409642.6327412,
+      "hash": "71f1dd1a7f5e95e65784c31a5c7b9305f196cdd2d3845335cd0770dc1543d5d9",
+      "size": 1519,
+      "mtime": 1794410845.3183033,
       "language": "python"
     },
     "tests/test_python_ast.py": {

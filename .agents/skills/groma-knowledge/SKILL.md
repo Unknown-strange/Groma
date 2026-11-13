@@ -2,8 +2,8 @@
 name: groma-knowledge
 description: Deterministic codebase knowledge, symbol map, and dependency architecture for Groma.
 version: 1.0.0
-fingerprint: 8ccecc57c593ef940b697985890380014320fa0cabebbb4d09fbcfb45ee7b2f5
-generated_at: 2026-11-11T15:08:02.544175+00:00
+fingerprint: 19a187d009e4e6f023ca9118d6d9af0bf3b776e409176001c88f11609ac18c6c
+generated_at: 2026-11-13T08:21:48.005718+00:00
 languages:
   - javascript
   - python

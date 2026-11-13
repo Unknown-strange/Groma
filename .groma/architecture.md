@@ -5,10 +5,10 @@
 ## 1. Project Overview
 
 - **Project Name**: `Groma`
-- **Generated At (UTC)**: `2026-11-11T15:08:02.544175+00:00`
-- **Summary Fingerprint**: `8ccecc57c593ef940b697985890380014320fa0cabebbb4d09fbcfb45ee7b2f5`
+- **Generated At (UTC)**: `2026-11-13T08:21:48.005718+00:00`
+- **Summary Fingerprint**: `19a187d009e4e6f023ca9118d6d9af0bf3b776e409176001c88f11609ac18c6c`
 - **Tracked Source Files**: 27
-- **Total Lines of Code**: 4,133
+- **Total Lines of Code**: 4,198
 - **Indexed Languages**: `javascript`, `python`
 
 ---
@@ -31,7 +31,7 @@ These files have the highest Fan-In (in-degree), meaning they are imported most 
 | 10 | `groma/generators/skill.py` | **2** | Skill generator for .agents/skills/<project>/SKILL.md. |
 | 11 | `groma/mcp_server.py` | **2** | Built-in Model Context Protocol (MCP) JSON-RPC 2.0 server and fast symbol search engine. |
 | 12 | `groma/parsers/python_ast.py` | **2** | Built-in Python AST parser extracting classes, functions, calls, imports, and HTTP routes. |
-| 13 | `groma/generators/rules.py` | **1** | Agent rule and MCP configuration generator for IDE AI agents (Cursor, Antigravity, Claude Code). |
+| 13 | `groma/generators/rules.py` | **1** | Agent rule and MCP configuration generator for IDE AI agents (Antigravity, Claude Code, Cursor, etc.). |
 | 14 | `groma/mcp_registry.py` | **1** | Multi-IDE MCP registration utility for Antigravity, Claude Desktop, and Cursor. |
 | 15 | `groma/parsers/universal.py` | **1** | Universal multi-language structural parser for PHP, JS/TS/Vue, Go, Rust, Java, SQL, etc. |
 

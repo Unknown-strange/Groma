@@ -1,6 +1,6 @@
 {
   "project_name": "Groma",
-  "updated_at": "2026-11-11T15:08:02.562455+00:00",
+  "updated_at": "2026-11-13T08:21:48.021381+00:00",
   "files": {
     "bin/groma.js": {
       "path": "bin/groma.js",
@@ -524,18 +524,67 @@
     "groma/generators/rules.py": {
       "path": "groma/generators/rules.py",
       "language": "python",
-      "size": 4376,
-      "lines_of_code": 99,
-      "module_docstring": "Agent rule and MCP configuration generator for IDE AI agents (Cursor, Antigravity, Claude Code).",
+      "size": 5706,
+      "lines_of_code": 119,
+      "module_docstring": "Agent rule and MCP configuration generator for IDE AI agents (Antigravity, Claude Code, Cursor, etc.).",
       "imports": [
         "__future__",
         "__future__.annotations",
         "json",
         "pathlib",
-        "pathlib.Path"
+        "pathlib.Path",
+        "re"
       ],
       "classes": [],
       "functions": [
+        {
+          "name": "_write_mcp_json",
+          "params": [
+            "mcp_path: Path"
+          ],
+          "return_type": "Path",
+          "decorators": [],
+          "docstring": "Safely insert or update the Groma MCP server entry in a JSON config file.",
+          "start_line": 36,
+          "end_line": 57,
+          "is_async": false,
+          "calls": [
+            "isinstance",
+            "json.dumps",
+            "json.loads",
+            "mcp_data.get",
+            "mcp_path.is_file",
+            "mcp_path.parent.mkdir",
+            "mcp_path.read_text",
+            "mcp_path.read_text(encoding='utf-8').strip",
+            "mcp_path.write_text"
+          ]
+        },
+        {
+          "name": "_upsert_agents_md",
+          "params": [
+            "repo_root: Path"
+          ],
+          "return_type": "Path",
+          "decorators": [],
+          "docstring": "Create or update the Groma section in root AGENTS.md without clobbering user rules.",
+          "start_line": 60,
+          "end_line": 80,
+          "is_async": false,
+          "calls": [
+            "RULES_CONTENT.rstrip",
+            "agents_md.is_file",
+            "agents_md.read_text",
+            "agents_md.write_text",
+            "existing.endswith",
+            "existing.rstrip",
+            "existing.strip",
+            "pattern.search",
+            "pattern.sub",
+            "re.compile",
+            "re.escape"
+          ]
+        },
         {
           "name": "render_agent_rules",
           "params": [
@@ -543,30 +592,20 @@
           ],
           "return_type": "list[Path]",
           "decorators": [],
-          "docstring": "Write agent rule files (.agents/rules/groma-sync.md, .cursorrules) and .cursor/mcp.json.",
-          "start_line": 30,
-          "end_line": 99,
+          "docstring": "Write always-on agent rule files (AGENTS.md, .agents/rules/groma-sync.md, .cursorrules) and MCP configs.",
+          "start_line": 83,
+          "end_line": 119,
           "is_async": false,
           "calls": [
+            "_upsert_agents_md",
+            "_write_mcp_json",
             "agents_rule_file.write_text",
             "agents_rules_dir.mkdir",
-            "cursor_dir.mkdir",
             "cursorrules_file.is_file",
             "cursorrules_file.read_text",
             "cursorrules_file.write_text",
             "generated.append",
-            "isinstance",
-            "json.dumps",
-            "json.loads",
-            "mcp_config_path.is_file",
-            "mcp_config_path.read_text",
-            "mcp_config_path.write_text",
-            "mcp_data.get",
-            "repo_root.resolve",
-            "root_mcp_data.get",
-            "root_mcp_path.is_file",
-            "root_mcp_path.read_text",
-            "root_mcp_path.write_text"
+            "repo_root.resolve"
           ]
         }
       ],
@@ -1021,8 +1060,8 @@
     "groma/mcp_registry.py": {
       "path": "groma/mcp_registry.py",
       "language": "python",
-      "size": 5140,
-      "lines_of_code": 151,
+      "size": 5203,
+      "lines_of_code": 154,
       "module_docstring": "Multi-IDE MCP registration utility for Antigravity, Claude Desktop, and Cursor.",
       "imports": [
         "__future__",
@@ -1082,12 +1121,13 @@
           "decorators": [],
           "docstring": "Safely insert or update an MCP server entry in a JSON configuration file.",
           "start_line": 46,
-          "end_line": 76,
+          "end_line": 78,
           "is_async": false,
           "calls": [
             "file_path.is_file",
             "file_path.parent.mkdir",
             "file_path.read_text",
+            "file_path.read_text(encoding='utf-8').strip",
             "file_path.write_text",
             "isinstance",
             "json.dumps",
@@ -1102,8 +1142,8 @@
           "return_type": "list[RegistrationResult]",
           "decorators": [],
           "docstring": "Register Groma MCP server in Google Antigravity global configurations.",
-          "start_line": 79,
-          "end_line": 109,
+          "start_line": 81,
+          "end_line": 111,
           "is_async": false,
           "calls": [
             "Path.home",
@@ -1123,8 +1163,8 @@
           "return_type": "list[RegistrationResult]",
           "decorators": [],
           "docstring": "Register Groma MCP server in Claude Desktop configuration.",
-          "start_line": 112,
-          "end_line": 140,
+          "start_line": 114,
+          "end_line": 142,
           "is_async": false,
           "calls": [
             "Path",
@@ -1145,8 +1185,8 @@
           "return_type": "list[RegistrationResult]",
           "decorators": [],
           "docstring": "Detect and register Groma in all installed AI IDEs and editors.",
-          "start_line": 143,
-          "end_line": 151,
+          "start_line": 145,
+          "end_line": 153,
           "is_async": false,
           "calls": [
             "all_results.extend",
@@ -2151,8 +2191,8 @@
     "tests/test_cli.py": {
       "path": "tests/test_cli.py",
       "language": "python",
-      "size": 3241,
-      "lines_of_code": 83,
+      "size": 3494,
+      "lines_of_code": 91,
       "module_docstring": "Integration tests for the Groma CLI commands: scan, check, and update.",
       "imports": [
         "groma.cli",
@@ -2234,6 +2274,19 @@
             "runner.invoke",
             "str"
           ]
+        },
+        {
+          "name": "test_cli_register_command",
+          "params": [],
+          "return_type": "None",
+          "decorators": [],
+          "docstring": "Verify groma register command executes and resolves executable.",
+          "start_line": 85,
+          "end_line": 89,
+          "is_async": false,
+          "calls": [
+            "runner.invoke"
+          ]
         }
       ],
       "routes": []
@@ -2241,8 +2294,8 @@
     "tests/test_generators.py": {
       "path": "tests/test_generators.py",
       "language": "python",
-      "size": 5337,
-      "lines_of_code": 169,
+      "size": 6301,
+      "lines_of_code": 191,
       "module_docstring": "Unit tests for Groma's markdown and SKILL.md document generators.",
       "imports": [
         "groma.generators",
@@ -2353,10 +2406,10 @@
           "decorators": [],
           "docstring": "Verify render_all_docs creates markdown, skill, rule, and MCP config files on disk.",
           "start_line": 152,
-          "end_line": 168,
+          "end_line": 170,
           "is_async": false,
           "calls": [
-            "(tmp_path / '.agents' / 'rules' / 'groma-sync.md').is_file",
+            "(tmp_path / '.agents' / 'rules' / 'groma-sync.md').read_text",
             "(tmp_path / '.agents' / 'skills' / 'my-service-knowledge' / 'SKILL.md').is_file",
             "(tmp_path / '.cursor' / 'mcp.json').is_file",
             "(tmp_path / '.cursorrules').is_file",
@@ -2364,10 +2417,29 @@
             "(tmp_path / '.groma' / 'dependencies.md').is_file",
             "(tmp_path / '.groma' / 'file-map.md').is_file",
             "(tmp_path / '.mcp.json').is_file",
+            "(tmp_path / 'AGENTS.md').is_file",
             "_sample_fixtures",
             "generate_all_docs",
             "len",
             "p.is_file"
+          ]
+        },
+        {
+          "name": "test_agents_md_preserves_custom_user_rules",
+          "params": [
+            "tmp_path: Path"
+          ],
+          "return_type": "None",
+          "decorators": [],
+          "docstring": "Verify AGENTS.md preserves custom user instructions across regenerations.",
+          "start_line": 173,
+          "end_line": 190,
+          "is_async": false,
+          "calls": [
+            "agents_md.read_text",
+            "agents_md.write_text",
+            "content2.count",
+            "render_agent_rules"
           ]
         }
       ],
@@ -2572,8 +2644,8 @@
     "tests/test_mcp_registry.py": {
       "path": "tests/test_mcp_registry.py",
       "language": "python",
-      "size": 1138,
-      "lines_of_code": 39,
+      "size": 1519,
+      "lines_of_code": 51,
       "module_docstring": "Tests for MCP multi-IDE registration.",
       "imports": [
         "groma.mcp_registry",
@@ -2608,12 +2680,13 @@
           "decorators": [],
           "docstring": "Verify MCP JSON configuration creation and safe updates.",
           "start_line": 15,
-          "end_line": 39,
+          "end_line": 50,
           "is_async": false,
           "calls": [
             "_update_json_mcp_config",
             "cfg_file.is_file",
-            "cfg_file.read_text"
+            "cfg_file.read_text",
+            "empty_file.write_text"
           ]
         }
       ],

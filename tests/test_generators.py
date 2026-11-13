@@ -154,16 +154,38 @@ def test_generate_all_docs_on_disk(tmp_path: Path) -> None:
     manifest, file_index, graph = _sample_fixtures()
     paths = generate_all_docs(tmp_path, manifest, file_index, graph)
 
-    assert len(paths) == 8
+    assert len(paths) == 9
     for p in paths:
         assert p.is_file()
 
+    assert (tmp_path / "AGENTS.md").is_file()
     assert (tmp_path / ".groma" / "architecture.md").is_file()
     assert (tmp_path / ".groma" / "file-map.md").is_file()
     assert (tmp_path / ".groma" / "dependencies.md").is_file()
     assert (tmp_path / ".agents" / "skills" / "my-service-knowledge" / "SKILL.md").is_file()
-    assert (tmp_path / ".agents" / "rules" / "groma-sync.md").is_file()
+    rule_text = (tmp_path / ".agents" / "rules" / "groma-sync.md").read_text(encoding="utf-8")
+    assert "trigger: always_on" in rule_text
     assert (tmp_path / ".cursorrules").is_file()
     assert (tmp_path / ".mcp.json").is_file()
     assert (tmp_path / ".cursor" / "mcp.json").is_file()
+
+
+def test_agents_md_preserves_custom_user_rules(tmp_path: Path) -> None:
+    """Verify AGENTS.md preserves custom user instructions across regenerations."""
+    from groma.generators.rules import render_agent_rules
+
+    agents_md = tmp_path / "AGENTS.md"
+    agents_md.write_text("# My Custom Team Rules\nAlways use strict typing.\n", encoding="utf-8")
+
+    render_agent_rules(tmp_path)
+    content = agents_md.read_text(encoding="utf-8")
+    assert "# My Custom Team Rules" in content
+    assert "Always use strict typing." in content
+    assert "<!-- groma:start -->" in content
+    assert "groma_find_symbol" in content
+
+    # Running a second time replaces the Groma block cleanly without duplicating it
+    render_agent_rules(tmp_path)
+    content2 = agents_md.read_text(encoding="utf-8")
+    assert content2.count("<!-- groma:start -->") == 1
 
